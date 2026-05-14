@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sree Ganesh — Content Editor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lato:wght@300;400;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --maroon: #4a0e0e;
+      --maroon-dark: #3a0808;
+      --saffron: #C8922A;
+      --saffron-light: #e6a832;
+      --gold: #D4AF37;
+      --cream: #FDF6EC;
+      --white: #ffffff;
+      --text-dark: #2c1a1a;
+      --text-muted: #888;
+      --border: #e8d5b5;
+      --green: #1a7a3a;
+      --green-light: #25a852;
+      --panel-bg: #1e1010;
+      --panel-border: #3a1a1a;
+      --input-bg: #2a1212;
+      --input-border: #5a2a2a;
+      --input-focus: #C8922A;
+      --tag-bg: rgba(200,146,42,0.18);
+      --success: #25a852;
+      --danger: #d43a3a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Lato', sans-serif; background: #120808; color: #e8d5b5; min-height: 100vh; }
+
+    /* ── HEADER ── */
+    .editor-header {
+      background: var(--maroon-dark);
+      border-bottom: 2px solid var(--saffron);
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    .editor-logo { display: flex; align-items: center; gap: 12px; }
+    .editor-logo .logo-icon { width: 40px; height: 40px; background: var(--saffron); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    .editor-logo h1 { font-family: 'Cinzel', serif; font-size: 15px; font-weight: 900; color: var(--gold); letter-spacing: 1px; line-height: 1.1; }
+    .editor-logo .sub { font-size: 9px; color: var(--saffron-light); letter-spacing: 2px; font-weight: 700; }
+    .editor-badge { background: rgba(200,146,42,0.2); border: 1px solid var(--saffron); color: var(--saffron-light); font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 20px; letter-spacing: 1px; font-family: 'JetBrains Mono', monospace; }
+    .header-actions { display: flex; gap: 10px; align-items: center; }
+    .btn-save-all { background: var(--saffron); color: white; border: none; padding: 9px 22px; font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; border-radius: 4px; cursor: pointer; letter-spacing: 0.5px; transition: all 0.2s; }
+    .btn-save-all:hover { background: var(--saffron-light); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(200,146,42,0.4); }
+    .btn-export { background: transparent; color: var(--gold); border: 1px solid var(--gold); padding: 9px 18px; font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; border-radius: 4px; cursor: pointer; letter-spacing: 0.5px; transition: all 0.2s; }
+    .btn-export:hover { background: rgba(212,175,55,0.12); }
+
+    /* ── LAYOUT ── */
+    .editor-layout { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 70px); }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      background: var(--panel-bg);
+      border-right: 1px solid var(--panel-border);
+      padding: 20px 0;
+      position: sticky;
+      top: 70px;
+      height: calc(100vh - 70px);
+      overflow-y: auto;
+    }
+    .sidebar-section { margin-bottom: 4px; }
+    .sidebar-label { font-size: 8px; font-weight: 700; letter-spacing: 2px; color: #6a4a4a; padding: 10px 18px 4px; text-transform: uppercase; font-family: 'JetBrains Mono', monospace; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 18px; cursor: pointer;
+      font-size: 11.5px; font-weight: 700; letter-spacing: 0.3px;
+      color: #b09080; transition: all 0.15s;
+      border-left: 3px solid transparent;
+      text-decoration: none;
+    }
+    .nav-item:hover { color: var(--saffron-light); background: rgba(200,146,42,0.07); }
+    .nav-item.active { color: var(--gold); background: rgba(200,146,42,0.12); border-left-color: var(--saffron); }
+    .nav-item .nav-icon { font-size: 15px; flex-shrink: 0; width: 20px; text-align: center; }
+    .nav-item .nav-count { margin-left: auto; background: rgba(200,146,42,0.2); color: var(--saffron-light); font-size: 9px; font-family: 'JetBrains Mono', monospace; padding: 2px 6px; border-radius: 10px; }
+
+    /* ── MAIN CONTENT ── */
+    .editor-main { background: #160a0a; padding: 28px 32px; overflow-y: auto; }
+
+    /* Section panel */
+    .section-panel { display: none; }
+    .section-panel.active { display: block; }
+    .section-title { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 900; color: var(--gold); margin-bottom: 4px; }
+    .section-desc { font-size: 11px; color: #8a6a6a; margin-bottom: 24px; letter-spacing: 0.3px; }
+
+    /* Cards */
+    .cards-grid { display: flex; flex-direction: column; gap: 14px; }
+    .editor-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .card-header {
+      background: rgba(200,146,42,0.08);
+      border-bottom: 1px solid var(--panel-border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+    }
+    .card-header:hover { background: rgba(200,146,42,0.12); }
+    .card-title-area { display: flex; align-items: center; gap: 10px; }
+    .card-num { width: 22px; height: 22px; background: var(--saffron); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 900; color: white; font-family: 'JetBrains Mono', monospace; flex-shrink: 0; }
+    .card-title { font-family: 'Cinzel', serif; font-size: 12px; font-weight: 700; color: #e8d5b5; }
+    .card-status { font-size: 9px; color: #6a5a5a; font-family: 'JetBrains Mono', monospace; }
+    .card-actions { display: flex; gap: 6px; align-items: center; }
+    .badge-status { font-size: 8px; font-weight: 700; padding: 3px 8px; border-radius: 10px; letter-spacing: 0.5px; }
+    .badge-live { background: rgba(37,168,82,0.2); color: #25a852; border: 1px solid rgba(37,168,82,0.3); }
+    .badge-draft { background: rgba(200,146,42,0.2); color: var(--saffron-light); border: 1px solid rgba(200,146,42,0.3); }
+    .badge-upcoming { background: rgba(100,100,200,0.2); color: #9090e8; border: 1px solid rgba(100,100,200,0.3); }
+    .toggle-arrow { color: var(--saffron); font-size: 12px; transition: transform 0.2s; }
+    .editor-card.collapsed .toggle-arrow { transform: rotate(-90deg); }
+    .card-body { padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .card-body.single { grid-template-columns: 1fr; }
+    .card-body.triple { grid-template-columns: 1fr 1fr 1fr; }
+    .editor-card.collapsed .card-body { display: none; }
+    .editor-card.collapsed .card-footer { display: none; }
+
+    /* Form fields */
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field.full { grid-column: 1 / -1; }
+    label { font-size: 9.5px; font-weight: 700; color: #8a6a6a; letter-spacing: 1px; text-transform: uppercase; font-family: 'JetBrains Mono', monospace; }
+    input[type="text"],
+    input[type="date"],
+    input[type="time"],
+    input[type="url"],
+    input[type="number"],
+    select,
+    textarea {
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 5px;
+      padding: 9px 12px;
+      font-size: 11.5px;
+      font-family: 'Lato', sans-serif;
+      color: #e8d5b5;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--saffron);
+      box-shadow: 0 0 0 3px rgba(200,146,42,0.15);
+    }
+    textarea { resize: vertical; min-height: 72px; line-height: 1.5; }
+    select option { background: #2a1212; color: #e8d5b5; }
+
+    /* Image upload field */
+    .img-upload {
+      background: var(--input-bg);
+      border: 1px dashed var(--input-border);
+      border-radius: 5px;
+      padding: 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .img-upload:hover { border-color: var(--saffron); background: rgba(200,146,42,0.05); }
+    .img-upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .img-upload .upload-text { font-size: 10px; color: #6a5a5a; }
+    .img-upload .upload-icon { font-size: 20px; margin-bottom: 4px; }
+    .img-preview { width: 100%; height: 70px; object-fit: cover; border-radius: 4px; display: none; }
+
+    /* Card footer */
+    .card-footer {
+      padding: 12px 16px;
+      border-top: 1px solid var(--panel-border);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .btn-sm { padding: 7px 16px; font-size: 10px; font-family: 'Cinzel', serif; font-weight: 700; border-radius: 3px; cursor: pointer; letter-spacing: 0.5px; transition: all 0.15s; border: none; }
+    .btn-primary { background: var(--saffron); color: white; }
+    .btn-primary:hover { background: var(--saffron-light); }
+    .btn-danger { background: transparent; color: #d43a3a; border: 1px solid #d43a3a; }
+    .btn-danger:hover { background: rgba(212,58,58,0.1); }
+    .btn-secondary { background: transparent; color: #8a6a6a; border: 1px solid #4a2a2a; }
+    .btn-secondary:hover { background: rgba(200,146,42,0.07); color: var(--saffron-light); }
+
+    /* Add new button */
+    .add-card-btn {
+      border: 1px dashed #4a2a2a;
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+      cursor: pointer;
+      color: #6a5a5a;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'Cinzel', serif;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+    }
+    .add-card-btn:hover { border-color: var(--saffron); color: var(--saffron-light); background: rgba(200,146,42,0.05); }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: var(--maroon-dark);
+      border: 1px solid var(--saffron);
+      border-left: 4px solid var(--saffron);
+      color: var(--gold);
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'Cinzel', serif;
+      letter-spacing: 0.5px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      z-index: 999;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-color: var(--success); color: var(--success); }
+    .toast.error { border-color: var(--danger); color: var(--danger); }
+
+    /* Tag input */
+    .tag-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+    .tag-chip { background: var(--tag-bg); border: 1px solid rgba(200,146,42,0.3); color: var(--saffron-light); font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 10px; display: flex; align-items: center; gap: 4px; font-family: 'JetBrains Mono', monospace; }
+    .tag-chip .remove-tag { cursor: pointer; color: #8a6a6a; }
+    .tag-chip .remove-tag:hover { color: var(--danger); }
+
+    /* Color picker row */
+    .color-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+    .color-opt { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: all 0.15s; }
+    .color-opt.selected, .color-opt:hover { border-color: var(--gold); transform: scale(1.15); }
+
+    /* Rich section info */
+    .info-bar { background: rgba(200,146,42,0.07); border: 1px solid rgba(200,146,42,0.2); border-radius: 6px; padding: 10px 14px; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
+    .info-bar .info-icon { font-size: 16px; }
+    .info-bar p { font-size: 10.5px; color: #b09080; line-height: 1.5; }
+
+    /* Section switcher tabs */
+    .section-tabs { display: flex; gap: 6px; margin-bottom: 24px; flex-wrap: wrap; }
+    .sec-tab { padding: 7px 14px; font-size: 10px; font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 0.5px; border-radius: 4px; cursor: pointer; border: 1px solid #3a1a1a; color: #8a6a6a; background: transparent; transition: all 0.15s; }
+    .sec-tab:hover { color: var(--saffron-light); border-color: #5a2a2a; }
+    .sec-tab.active { background: var(--saffron); color: white; border-color: var(--saffron); }
+
+    /* Stats row at top */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+    .stat-card { background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 6px; padding: 14px 16px; }
+    .stat-card .stat-num { font-family: 'Cinzel', serif; font-size: 22px; font-weight: 900; color: var(--gold); display: block; }
+    .stat-card .stat-label { font-size: 9.5px; color: #6a5a5a; letter-spacing: 1px; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; margin-top: 2px; }
+    .stat-card .stat-change { font-size: 9px; color: var(--success); margin-top: 4px; font-weight: 700; }
+
+    /* Rich text toolbar stub */
+    .rte-toolbar { background: rgba(0,0,0,0.3); border: 1px solid var(--input-border); border-bottom: none; border-radius: 5px 5px 0 0; padding: 6px 10px; display: flex; gap: 4px; }
+    .rte-btn { background: transparent; border: none; color: #8a6a6a; padding: 3px 7px; border-radius: 3px; cursor: pointer; font-size: 12px; font-weight: 700; transition: all 0.15s; }
+    .rte-btn:hover { background: rgba(200,146,42,0.15); color: var(--saffron-light); }
+    .rte-area { border-radius: 0 0 5px 5px !important; }
+
+    /* Gem colors */
+    .gem-ruby { color: #e82a2a; }
+    .gem-emerald { color: #2ae878; }
+    .gem-sapphire { color: #2a7ae8; }
+    .gem-pearl { color: #f0e8d8; }
+    .gem-coral { color: #e8782a; }
+    .gem-yellow { color: #e8d82a; }
+    .gem-blue { color: #2ad8e8; }
+    .gem-cat { color: #c8a85a; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #120808; }
+    ::-webkit-scrollbar-thumb { background: #3a1a1a; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--saffron); }
+
+    /* Separator */
+    .sep { height: 1px; background: var(--panel-border); margin: 6px 0; }
+    .sep-label { display: flex; align-items: center; gap: 10px; color: #5a3a3a; font-size: 9px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px; margin: 10px 0; }
+    .sep-label::before, .sep-label::after { content: ''; flex: 1; height: 1px; background: var(--panel-border); }
+
+    /* Image URL toggle */
+    .img-mode-toggle { display: flex; gap: 6px; margin-bottom: 6px; }
+    .img-mode-btn { padding: 4px 10px; font-size: 9px; font-weight: 700; border-radius: 3px; cursor: pointer; letter-spacing: 0.5px; font-family: 'JetBrains Mono', monospace; border: 1px solid #4a2a2a; color: #6a5a5a; background: transparent; transition: all 0.15s; }
+    .img-mode-btn.active { background: rgba(200,146,42,0.15); color: var(--saffron-light); border-color: var(--saffron); }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="editor-header">
+  <div class="editor-logo">
+    <div class="logo-icon">🕉</div>
+    <div>
+      <h1>SREE GANESH</h1>
+      <div class="sub">CONTENT EDITOR PANEL</div>
+    </div>
+  </div>
+  <div class="editor-badge">✦ ADMIN DASHBOARD</div>
+  <div class="header-actions">
+    <button class="btn-export" onclick="exportJSON()">⬇ EXPORT JSON</button>
+    <button class="btn-save-all" onclick="saveAll()">💾 SAVE ALL CHANGES</button>
+  </div>
+</div>
+
+<div class="editor-layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-label">Content Sections</div>
+    <div class="sidebar-section">
+      <a class="nav-item active" onclick="showSection('pooja')">
+        <span class="nav-icon">🪔</span> Pooja Events
+        <span class="nav-count">5</span>
+      </a>
+      <a class="nav-item" onclick="showSection('jothishya')">
+        <span class="nav-icon">🔭</span> Jothishya Magazine
+        <span class="nav-count">4</span>
+      </a>
+      <a class="nav-item" onclick="showSection('gemstone')">
+        <span class="nav-icon">💎</span> Gemstone Guidance
+        <span class="nav-count">8</span>
+      </a>
+      <a class="nav-item" onclick="showSection('vastu-mag')">
+        <span class="nav-icon">📖</span> Vastu Magazine
+        <span class="nav-count">4</span>
+      </a>
+      <a class="nav-item" onclick="showSection('vastu-plans')">
+        <span class="nav-icon">🏛</span> Vastu Plans & Arch.
+        <span class="nav-count">3</span>
+      </a>
+      <a class="nav-item" onclick="showSection('interior')">
+        <span class="nav-icon">🛋</span> Interior Design
+        <span class="nav-count">4</span>
+      </a>
+      <a class="nav-item" onclick="showSection('spiritual')">
+        <span class="nav-icon">🌸</span> Spiritual Magazine
+        <span class="nav-count">4</span>
+      </a>
+    </div>
+    <div class="sep"></div>
+    <div class="sidebar-label">Settings</div>
+    <div class="sidebar-section">
+      <a class="nav-item" onclick="showSection('site-settings')">
+        <span class="nav-icon">⚙️</span> Site Settings
+      </a>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="editor-main">
+
+    <!-- ══════════════════════════════════
+         POOJA EVENTS
+    ══════════════════════════════════ -->
+    <div class="section-panel active" id="panel-pooja">
+      <div class="section-title">🪔 Pooja Events</div>
+      <div class="section-desc">Manage upcoming Pooja events shown in the homepage sidebar column.</div>
+
+      <div class="info-bar">
+        <span class="info-icon">ℹ️</span>
+        <p>Events appear in the narrow column on the homepage. Add image, title, date and a booking link. Max 6 events recommended for best display.</p>
+      </div>
+
+      <div class="cards-grid" id="pooja-cards">
+
+        <!-- Event 1 -->
+        <div class="editor-card" id="pe-1">
+          <div class="card-header" onclick="toggleCard('pe-1')">
+            <div class="card-title-area">
+              <div class="card-num">1</div>
+              <div>
+                <div class="card-title">Ganesh Chaturthi Homam 2025</div>
+                <div class="card-status">Aug 27, 2025 · Colombo</div>
+              </div>
+            </div>
+            <div class="card-actions">
+              <span class="badge-status badge-upcoming">UPCOMING</span>
+              <span class="toggle-arrow">▼</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="field">
+              <label>Event Title</label>
+              <input type="text" value="Ganesh Chaturthi Homam 2025"/>
+            </div>
+            <div class="field">
+              <label>Event Date</label>
+              <input type="date" value="2025-08-27"/>
+            </div>
+            <div class="field">
+              <label>Time</label>
+              <input type="time" value="06:00"/>
+            </div>
+            <div class="field">
+              <label>Status</label>
+              <select>
+                <option selected>Upcoming</option>
+                <option>Live / Ongoing</option>
+                <option>Completed</option>
+                <option>Cancelled</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label>Location / Venue</label>
+              <input type="text" value="Sri Ganesh Temple, Colombo 06"/>
+            </div>
+            <div class="field full">
+              <label>Description</label>
+              <div class="rte-toolbar">
+                <button class="rte-btn" title="Bold"><b>B</b></button>
+                <button class="rte-btn" title="Italic"><i>I</i></button>
+                <button class="rte-btn" title="Underline"><u>U</u></button>
+              </div>
+              <textarea class="rte-area" rows="3">Sacred Ganesh Homam ceremony to remove obstacles and bless devotees. Open to all families. Prasadam will be served.</textarea>
+            </div>
+            <div class="field">
+              <label>Event Image</label>
+              <div class="img-mode-toggle">
+                <button class="img-mode-btn active">📁 Upload</button>
+                <button class="img-mode-btn">🔗 URL</button>
+              </div>
+              <div class="img-upload">
+                <input type="file" accept="image/*"/>
+                <div class="upload-icon">🖼</div>
+                <div class="upload-text">Click to upload event image<br/>JPG, PNG · Max 2MB</div>
+              </div>
+            </div>
+            <div class="field">
+              <label>WhatsApp Booking Link</label>
+              <input type="url" placeholder="https://wa.me/94711234567?text=Book+Homam"/>
+              <label style="margin-top:8px">Entry Fee (LKR)</label>
+              <input type="text" value="Free Entry"/>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-sm btn-danger" onclick="removeCard('pe-1')">🗑 Delete</button>
+            <button class="btn-sm btn-secondary">Preview</button>
+            <button class="btn-sm btn-primary" onclick="saveCard('pe-1','Ganesh Chaturthi Homam 2025')">Save Event</button>
+          </div>
+        </div>
+
+        <!-- Event 2 -->
+        <div class="editor-card collapsed" id="pe-2">
+          <div class="card-header" onclick="toggleCard('pe-2')">
+            <div class="card-title-area">
+              <div class="card-num">2</div>
+              <div>
+                <div class="card-title">Lakshmi Kubera Pooja</div>
+                <div class="card-status">Sep 5, 2025 · Battaramulla</div>
+              </div>
+            </div>
+            <div class="card-actions">
+              <span class="badge-status badge-upcoming">UPCOMING</span>
+              <span class="toggle-arrow">▼</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="field"><label>Event Title</label><input type="text" value="Lakshmi Kubera Pooja"/></div>
+            <div class="field"><label>Event Date</label><input type="date" value="2025-09-05"/></div>
+            <div class="field"><label>Time</label><input type="time" value="18:30"/></div>
+            <div class="field"><label>Status</label><select><option selected>Upcoming</option><option>Live / Ongoing</option><option>Completed</option></select></div>
+            <div class="field full"><label>Location / Venue</label><input type="text" value="Sri Vastu Homes Office, Battaramulla"/></div>
+            <div class="field full"><label>Description</label><textarea rows="3">Invoke the blessings of Goddess Lakshmi and Lord Kubera for financial prosperity and abundance.</textarea></div>
+            <div class="field"><label>Event Image</label><div class="img-upload"><input type="file" accept="image/*"/><div class="upload-icon">🖼</div><div class="upload-text">Upload image</div></div></div>
+            <div class="field"><label>WhatsApp Booking Link</label><input type="url" placeholder="https://wa.me/..."/><label style="margin-top:8px">Entry Fee (LKR)</label><input type="text" value="LKR 500"/></div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-sm btn-danger" onclick="removeCard('pe-2')">🗑 Delete</button>
+            <button class="btn-sm btn-secondary">Preview</button>
+            <button class="btn-sm btn-primary" onclick="saveCard('pe-2','Lakshmi Kubera Pooja')">Save Event</button>
+          </div>
+        </div>
+
+        <!-- Event 3 -->
+        <div class="editor-card collapsed" id="pe-3">
+          <div class="card-header" onclick="toggleCard('pe-3')">
+            <div class="card-title-area">
+              <div class="card-num">3</div>
+              <div>
+                <div class="card-title">Navagraha Shanti Homa</div>
+                <div class="card-status">Oct 12, 2025 · Online + Temple</div>
+              </div>
+            </div>
+            <div class="card-actions">
+              <span class="badge-status badge-upcoming">UPCOMING</span>
+              <span class="toggle-arrow">▼</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="field"><label>Event Title</label><input type="text" value="Navagraha Shanti Homa"/></div>
+            <div class="field"><label>Event Date</label><input type="date" value="2025-10-12"/></div>
+            <div class="field"><label>Time</label><input type="time" value="07:00"/></div>
+            <div class="field"><label>Status</label><select><option selected>Upcoming</option><option>Live / Ongoing</option><option>Completed</option></select></div>
+            <div class="field full"><label>Location / Venue</label><input type="text" value="Online via Zoom + Sri Ganesh Temple"/></div>
+            <div class="field full"><label>Description</label><textarea rows="3">Balance the nine planetary energies affecting your life through this powerful fire ritual. Both in-person and online participation available.</textarea></div>
+            <div class="field"><label>Event Image</label><div class="img-upload"><input type="file" accept="image/*"/><div class="upload-icon">🖼</div><div class="upload-text">Upload image</div></div></div>
+            <div class="field"><label>WhatsApp Booking Link</label><input type="url" placeholder="https://wa.me/..."/><label style="margin-top:8px">Entry Fee (LKR)</label><input type="text" value="LKR 1,500"/></div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-sm btn-danger" onclick="removeCard('pe-3')">🗑 Delete</button>
+            <button class="btn-sm btn-secondary">Preview</button>
+            <button class="btn-sm btn-primary" onclick="saveCard('pe-3','Navagraha Shanti Homa')">Save Event</button>
+          </div>
+        </div>
+
+      </div>
+      <div class="add-card-btn" style="margin-top:12px" onclick="addPoojaEvent()">+ ADD NEW POOJA EVENT</div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         JOTHISHYA MAGAZINE
+    ══════════════════════════════════ -->
+    <div class="section-panel" id="panel-jothishya">
+      <div class="section-title">🔭 Jothishya Magazine</div>
+      <div class="section-desc">Manage astrology articles shown in the dark magazine tile on the homepage.</div>
+
+      <div class="info-bar">
+        <span class="info-icon">ℹ️</span>
+        <p>Articles display with a thumbnail, title, date and a read-more link. Upload or link an image per article. Keep titles under 60 characters for best layout.</p>
+      </div>
+
+      <div class="cards-grid" id="joth-cards">
+
+        <div class="editor-card" id="jt-1">
+          <div class="card-header" onclick="toggleCard('jt-1')">
+            <div class="card-title-area">
+              <div class="card-num">1</div>
+              <div><div class="card-title">Your 2025 Vedic Forecast</div><div class="card-status">Published · Jul 2025</div></div>
+            </div>
+            <div class="card-actions"><span class="badge-status badge-live">LIVE</span><span class="toggle-arrow">▼</span></div>
+          </div>
+          <div class="card-body">
+            <div class="field"><label>Article Title</label><input type="text" value="Your 2025 Vedic Forecast — Saturn & Jupiter Transits"/></div>
+            <div class="field"><label>Publish Date</label><input type="date" value="2025-07-01"/></div>
+            <div class="field full"><label>Excerpt / Summary</label><textarea rows="3">How Saturn's move into Aquarius and Jupiter's entry into Cancer will reshape your destiny across all 12 rashis this year.</textarea></div>
+            <div class="field"><label>Thumbnail Image</label><div class="img-upload"><input type="file" accept="image/*"/><div class="upload-icon">🖼</div><div class="upload-text">Upload thumbnail</div></div></div>
+            <div class="field">
+              <label>Category</label>
+              <select><option>Vedic Astrology</option><option>Nakshatra</option><option>Rashi Forecast</option><option>Planetary Transit</option><option>Muhurtha</option></select>
+              <label style="margin-top:8px">Read More URL</label>
+              <input type="url" placeholder="https://..."/>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-sm btn-danger" onclick="removeCard('jt-1')">🗑 Delete</button>
+            <button class="btn-sm btn-secondary">Preview</button>
+            <button class="btn-sm btn-primary" onclick="saveCard('jt-1','2025 Vedic Forecast')">Save Article</button>
+          </div>
+        </div>
+
+        <div class="editor-card collapsed" id="jt-2">
+          <div class="card-header" onclick="toggleCard('jt-2')">
+            <div class="card-title-area">
+              <div class="card-num">2</div>
+              <div><div class="card-title">Rahu-Ketu Axis: Hidden Karmic Patterns</div><div class="card-status">Published · Jun 2025</div></div>
+            </div>
+            <div class="card-actions"><span class="badge-status badge-live">LIVE</span><span class="toggle-arrow">▼</span></div>
+          </div>
+          <div class="card-body">
+            <div class="field"><label>Article Title</label><input type="text" value="Rahu-Ketu Axis: Hidden Karmic Patterns"/></div>
+            <div class="field"><label>Publish Date</label><input type="date" value="2025-06-15"/></div>
+            <div class="field full"><label>Excerpt / Summary</label><textarea rows="3">Understanding the nodal axis in your birth chart and what it reveals about your soul's journey and karmic debts.</textarea></div>
+            <div class="field"><label>Thumbnail Image</label><div class="img-upload"><input type="file" accept="image/*"/><div class="upload-icon">🖼</div><div class="upload-text">Upload thumbnail</div></div></div>
+            <div class="field"><label>Category</label><select><option>Vedic Astrology</option><option selected>Nakshatra</option><option>Rashi Forecast</option><option>Planetary Transit</option></select><label style="margin-top:8px">Read More URL</label><input type="url" placeholder="https://..."/></div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-sm btn-danger" onclick="removeCard('jt-2')">🗑 Delete</button>
+            <button class="btn-sm btn-secondary">Preview</button>
+            <button class="btn-sm btn-primary" onclick="saveCard('jt-2','Rahu-Ketu Article')">Save Article</button>
+          </div>
+        </div>
+
+        <div class="editor-card collapsed" id="jt-3">
+          <div class="card-header" onclick="toggleCard('jt-3')">
+            <div class="card-title-area">
+              <div class="card-num">3</div>
+              <div><div class="card-title">Marriage Matching — Beyond Sun Signs</div><div class="card-status">Draft</div></div>
+            </div>
+            <div class="card-actions"><span class="badge-status badge-draft">DRAFT</span><span class="toggle-arrow">▼</span></div>
+          </div>
+          <div class="card-body">
+            <div class="field"><label>Article Title</label><input type="text" value="Marriage Matching — Beyond Sun Signs"/></div>
+            <div class="field"><label>Publish Date</label><input type="date"/></div>
+            <div class="field full"><label>Excerpt / Summary</label><textarea rows="3">A deep dive into Kundali Milan — the 36 gunas, Manglik doshas, and compatibility factors that really matter in Vedic matchmaking.</textarea></div>
+            <div class="field"><label>Thumbnail Image</label><div class="img-upload"><input type="file" accept="image/*"/><div class="upload-icon">🖼</div><div class="upload-text">Upload thumbnail</div></div></div>
+            <div class="field"><label>Category</label><select><option>Vedic Astrology</option><option>Nakshatra</option><option>Rashi Forecast</option><option>Planetary Transit</option><option>Muhurtha</option></select><label style="margin-top:8px">Read More URL</label><input type="url" placeholder="https://..."/></div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-sm btn-danger" onclick="removeCard('jt-3')">🗑 Delete</button>
+            <button class="btn-sm btn-secondary">Preview</button>
+            <button class="btn-sm btn-primary" onclick="saveCard('jt-3','Marriage Matching Article')">Save Article</button>
+          </div>
+        </div>
+
+      </div>
+      <div class="add-card-btn" style="margin-top:12px" onclick="addArticle('joth-cards','jt')">+ ADD NEW ARTICLE</div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         GEMSTONE GUIDANCE
+    ══════════════════════════════════ -->
+    <div class="section-panel" id="panel-gemstone">
+      <div class="section-title">💎 Gemstone Guidance</div>
+      <div class="section-desc">Edit the 8 gemstone cards shown in the grid on the homepage.</div>
+
+      <div class="info-bar">
+        <span class="info-icon">ℹ️</span>
+        <p>Each gem card has an emoji/icon, name, planet association, and a short benefit text. These appear in a 2×4 grid.</p>
+      </div>
+
+      <div class="cards-grid">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+
+          <!-- Gem 1 -->
+          <div class="editor-card" id="gm-1">
+            <div class="card-header" onclick="toggleCard('gm-1')">
+              <div class="card-title-area"><div class="card-num gem-ruby">💎</div><div><div class="card-title">Ruby — Manik</div><div class="card-status">Sun · Ravi</div></div></div>
+              <div class="card-actions"><span class="badge-status badge-live">LIVE</span><span class="toggle-arrow">▼</span></div>
+            </div>
+            <div class="card-body single">
+              <div class="field"><label>Gem Name (English)</label><input type="text" value="Ruby"/></div>
+              <div class="field"><label>Local Name</label><input type="text" value="Manik / Kempu"/></div>
+              <div class="field"><label>Ruling Planet</label><select><option selected>Sun (Ravi)</option><option>Moon (Chandra)</option><option>Mars (Mangal)</option><option>Mercury (Budha)</option><option>Jupiter (Guru)</option><option>Venus (Shukra)</option><option>Saturn (Shani)</option><option>Rahu</option><option>Ketu</option></select></div>
+              <div class="field"><label>Display Emoji / Icon</label><input type="text" value="🔴" maxlength="4"/></div>
+              <div class="field"><label>Benefit Description</label><textarea rows="2">Boosts confidence, leadership & vitality. Strengthens the Sun's power in your chart.</textarea></div>
+              <div class="field"><label>Price Range (LKR)</label><input type="text" value="LKR 5,000 – 25,000"/></div>
+            </div>
+            <div class="card-footer">
+              <button class="btn-sm btn-primary" onclick="saveCard('gm-1','Ruby')">Save</button>
+            </div>
+          </div>
+
+          <!-- Gem 2 -->
+          <div class="editor-card" id="gm-2">
+            <div class="card-header" onclick="toggleCard('gm-2')">
+              <div class="card-title-area"><div class="card-num gem-pearl">🌙</div><div><div class="card-title">Pearl — Moti</div><div class="card-status">Moon · Chandra</div></div></div>
+              <div class="card-actions"><span class="badge-status badge-live">LIVE</span><span class="toggle-arrow">▼</span></div>
+            </div>
+            <div class="card-body single">
+              <div class="field"><label>Gem Name (English)</label><input type="text" value="Pearl"/></div>
+              <div class="field"><label>Local Name</label><input type="text" value="Moti / Muktaphala"/></div>
+              <div class="field"><label>Ruling Planet</label><select><option>Sun (Ravi)</option><option selected>Moon (Chandra)</option><option>Mars (Mangal)</option><option>Mercury (Budha)</option><option>Jupiter (Guru)</option><option>Venus (Shukra)</option><option>Saturn (Shani)</option><option>Rahu</option><option>Ketu</option></select></div>
+              <div class="field"><label>Display Emoji / Icon</label><input type="text" value="⚪" maxlength="4"/></div>
+              <div class="field"><label>Benefit Description</label><textarea rows="2">Calms emotions, enhances intuition, brings peace and feminine energy into balance.</textarea></div>
+              <div class="field"><label>Price Range (LKR)</label><input type="text" value="LKR 3,000 – 15,000"/></div>
+            </div>
+            <div class="card-footer">
+              <button class="btn-sm btn-primary" onclick="saveCard('gm-2','Pearl')">Save</button>
+            </div>
+          </div>
+
+          <!-- Gem 3 -->
+          <div class="editor-card" id="gm-3">
+            <div class="card-header" onclick="toggleCard('gm-3')">
+              <div class="card-title-area"><div class="card-num gem-emerald">💚</div><div><div class="card-title">Emerald — Panna</div><div class="card-status">Mercury · Budha</div></div></div>
+              <div class="card-actions"><span class="badge-status badge-live">LIVE</span><span class="toggle-arrow">▼</span></div>
+            </div>
+            <div class="card-body single">
+              <div class="field"><label>Gem Name (English)</label><input type="text" value="Emerald"/></div>
+              <div class="field"><label>Local Name</label><input type="text" value="Panna / Marakata"/></div>
+              <div class="field"><label>Ruling Planet</label><select><option>Sun (Ravi)</option><option>Moon (Chandra)</option><option>Mars (Mangal)</option><option selected>Mercury (Budha)</option><option>Jupiter (Guru)</option><option>Venus (Shukra)</option><option>Saturn (Shani)</option></select></div>
+              <div class="field"><label>Display Emoji / Icon</label><input type="text" value="💚" maxlength="4"/></div>
+              <div class="field"><label>Benefit Description</label><textarea rows="2">Sharpens intellect, improves communication, business success & creative thinking.</textarea></div>
+              <div class="field"><label>Price Range (LKR)</label><input type="text" value="LKR 8,000 – 40,000"/></div>
+            </div>
+            <div class="card-footer">
+              <button class="btn-sm btn-primary" onclick="saveCard('gm-3','Emerald')">Save</button>
+            </div>
+          </div>
+
+          <!-- Gem 4 -->
+          <div class="editor-card" id="gm-4">
+            <div class="card-header" onclick="toggleCard('gm-4')">
+              <div class="card-title-area"><div class="card-num gem-yellow">⭐</div><div><div class="card-title">Yellow Sapphire — Pukhraj</div><div class="card-status">Jupiter · Guru</div></div></div>
+              <div class="card-actions"><span class="badge-status badge-live">LIVE</span><span class="toggle-arrow">▼</span></div>
+            </div>
+            <div class="card-body single">
+              <div class="field"><label>Gem Name (English)</label><input type="text" value="Yellow Sapphire"/></div>
+              <div class="field"><label>Local Name</label><input type="text" value="Pukhraj / Pushparagam"/></div>
+              <div class="field"><label>Ruling Planet</label><select><option>Sun (Ravi)</option><option>Moon (Chandra)</option><option>Mars (Mangal)</option><option>Mercury (Budha)</option><option selected>Jupiter (Guru)</option><option>Venus (Shukra)</option><option>Saturn (Shani)</option></select></div>
+              <div class="field"><label>Display Emoji / Icon</label><input type="text" value="💛" maxlength="4"/></div>
+              <div class="field"><label>Benefit Description</label><textarea rows="2">Brings wisdom, prosperity, and divine grace. Excellent for teachers, lawyers & spiritual seekers.</textarea></div>
+              <div class="field"><label>Price Range (LKR)</label><input type="text" value="LKR 10,000 – 50,000"/></div>
+            </div>
+            <div class="card-footer">
+              <button class="btn-sm btn-primary" onclick="saveCard('gm-4','Yellow Sapphire')">Save</button>
+            </div>
+          </div>
+
+          <!-- Gem 5 -->
+          <div class="editor-card" id="gm-5">
+            <div class="card-header" onclick="toggleCard('gm-5')">
+              <div class="card-title-area"><div class="card-num gem-coral">🔶</div><div><div class="card-title">Red Coral — Moonga</div><div class="card-status">Mars · Mangal</div></div></div>
+              <div class="card-actions"><span class="badge-status badge-live">LIVE</span><span class="toggle-arrow">▼</span></div>
+            </div>
+            <div class="card-body single">
+              <div class="field"><label>Gem Name (English)</label><input type="text" value="Red Coral"/></div>
+              <div class="field"><label>Local Name</label><input type="text" value="Moonga / Pavizham"/></div>
+              <div class="field"><label>Ruling Planet</label><select><option>Sun (Ravi)</option><option>Moon (Chandra)</option><option selected>Mars (Mangal)</option><option>Mercury (Budha)</option><option>Jupiter (Guru)</option></select></div>
+              <div class="field"><label>Display Emoji / Icon</label><input type="text" value="🔶" maxlength="4"/></div>
+              <div class="field"><label>Benefit Description</label><textarea rows="2">Courage, energy, property gains and health. Removes Mangal Dosha effects from the chart.</textarea></div>
+              <div class="field"><label>Price Range (LKR)</label><input type="text" value="LKR 4,000 – 20,000"/></div>
+            </div>
+            <div class="card-footer">
+              <button class="btn-sm btn-primary" onclick="saveCard('gm-5','Red Coral')">Save</button>
+            </div>
+          </div>
+
+          <!-- Gem 6 -->
+          <div class="editor-card" id="gm-6">
+            <div class="card-header" onclick="toggleCard('gm-6')">
+              <div class="card-title-area"><div class="card-num gem-sapphire">💙</div><div><div class="card-title">Blue Sapphire — Neelam</div><div class="card-status">Saturn · Shani</div></div></div>
+              <div class="card-actions"><span class="badge-status badge-live">LIVE</span><span class="toggle-arrow">▼</span></div>
+            </div>
+            <div class="card-body single">
+              <div class="field"><label>Gem Name (English)</label><input type="text" value="Blue Sapphire"/></div>
+              <div class="field"><label>Local Name</label><input type="text" value="Neelam / Indraneelam"/></div>
+              <div class="field"><label>Ruling Planet</label><select><option>Sun (Ravi)</option><option>Moon (Chandra)</option><option>Mars (Mangal)</option><option>Mercury (Budha)</option><option>Jupiter (Guru)</option><option>Venus (Shukra)</option><option selected>Saturn (Shani)</option></select></div>
+              <div class="field"><label>Display Emoji / Icon</label><input type="text" value="💙" maxlength="4"/></div>
+              <div class="field"><label>Benefit Description</label><textarea rows="2">Fast-acting stone for career breakthroughs, discipline and justice. Must be tested before wearing.</textarea></div>
+              <div class="field"><label>Price Range (LKR)</label><input type="text" value="LKR 12,000 – 80,000"/></div>
+            </div>
+            <div class="card-footer">
+              <button class="btn-sm btn-primary" onclick="saveCard('gm-6','Blue Sapphire')">Save</button>
+            </div>
+          </div>
+
+          <!-- Gem 7 -->
+          <div class="editor-card" id="gm-7">
+            <div class="card-header" onclick="toggleCard('gm-7')">
+              <div class="card-title-area"><div class="card-num">🟤</div><div><div class="card-title">Hessonite — Gomed</div><div class="card-status">Rahu</div></div></div>
+              <div class="card-actions"><span class="badge-status badge-live">LIVE</span><span class="toggle-arrow">▼</span></div>
+            </div>
+            <div class="card-body single">
+              <div class="field"><label>Gem Name (English)</label><input type="text" value="Hessonite Garnet"/></div>
+              <div class="field"><label>Local Name</label><input type="text" value="Gomed / Gomedakam"/></div>
+              <div class="field"><label>Ruling Planet</label><select><option>Sun (Ravi)</option><option>Moon (Chandra)</option><option>Mars (Mangal)</option><option>Mercury (Budha)</option><option>Jupiter (Guru)</option><option>Venus (Shukra)</option><option>Saturn (Shani)</option><option selected>Rahu</option><option>Ketu</option></select></div>
+              <div class="field"><label>Display Emoji / Icon</label><input type="text" value="🟤" maxlength="4"/></div>
+              <div class="field"><label>Benefit Description</label><textarea rows="2">Neutralises Rahu's malefic effects. Aids in overcoming addictions, confusion and hidden enemies.</textarea></div>
+              <div class="field"><label>Price Range (LKR)</label><input type="text" value="LKR 3,500 – 18,000"/></div>
+            </div>
+            <div class="card-footer">
+              <button class="btn-sm btn-primary" onclick="saveCard('gm-7','Hessonite')">Save</button>
+            </div>
+          </div>
+
+          <!-- Gem 8 -->
+          <div class="editor-card" id="gm-8">
+            <div class="card-header" onclick="toggleCard('gm-8')">
+              <div class="card-title-area"><div class="card-num gem-cat">🐱</div><div><div class="card-title">Cat's Eye — Lehsunia</div><div class="card-status">Ketu</div></div></div>
+              <div class="card-actions"><span class="badge-status badge-live">LIVE</span><span class="toggle-arrow">▼</span></div>
+            </div>
+            <div class="card-body single">
+              <div class="field"><label>Gem Name (English)</label><input type="text" value="Cat's Eye"/></div>
+              <div class="field"><label>Local Name</label><input type="text" value="Lehsunia / Vaiduryam"/></div>
+              <div class="field"><label>Ruling Planet</label><select><option>Sun (Ravi)</option><option>Moon (Chandra)</option><option>Mars (Mangal)</option><option>Mercury (Budha)</option><option>Jupiter (Guru)</option><option>Venus (Shukra)</option><option>Saturn (Shani)</option><option>Rahu</option><option selected>Ketu</option></select></div>
+              <div class="field"><label>Display Emoji / Icon</label><input type="text" value="👁" maxlength="4"/></div>
+              <div class="field"><label>Benefit Description</label><textarea rows="2">Protects from evil eye, sudden losses and accidents. Brings moksha energy and spiritual insight.</textarea></div>
+              <div class="field"><label>Price Range (LKR)</label><input type="text" value="LKR 4,000 – 22,000"/></div>
+            </div>
+            <div class="card-footer">
+              <button class="btn-sm btn-primary" onclick="saveCard('gm-8','Cat\'s Eye')">Save</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         VASTU MAGAZINE
+    ══════════════════════════════════ -->
+    <div class="section-panel" id="panel-vastu-mag">
+      <div class="section-title">📖 Vastu Magazine</div>
+      <div class="section-desc">Manage Vastu Shastra articles shown in the white magazine tile on the homepage.</div>
+
+      <div class="info-bar">
+        <span class="info-icon">ℹ️</span>
+        <p>These appear in the lighter-themed Vastu tile. Same format as Jothishya but with Vastu-specific categories.</p>
+      </div>
+
+      <div class="cards-grid" id="vastu-mag-cards">
+
+        <div class="editor-card" id="vm-1">
+          <div class="card-header" onclick="toggleCard('vm-1')">
+            <div class="card-title-area"><div class="card-num">1</div><div><div class="card-title">5 Vastu Mistakes Most Homes Make</div><div class="card-status">Published · May 2025</div></div></div>
+            <div class="card-actions"><span class="badge-status badge-live">LIVE</span><span class="toggle-arrow">▼</span></div>
+          </div>
+          <div class="card-body">
+            <div class="field"><label>Article Title</label><input type="text" value="5 Vastu Mistakes Most Homes Make (And How to Fix Them)"/></div>
+            <div class="field"><label>Publish Date</label><input type="date" value="2025-05-10"/></div>
+            <div class="field full"><label>Excerpt</label><textarea rows="3">Most homeowners unknowingly violate basic Vastu principles. Learn the top 5 mistakes and simple remedies that don't require demolition.</textarea></div>
+            <div class="field"><label>Thumbnail</label><div class="img-upload"><input type="file" accept="image/*"/><div class="upload-icon">🖼</div><div class="upload-text">Upload thumbnail</div></div></div>
+            <div class="field"><label>Category</label><select><option>Home Vastu</option><option>Office Vastu</option><option>Plot Selection</option><option>Vastu Remedies</option><option>Kitchen & Bedroom</option></select><label style="margin-top:8px">Read More URL</label><input type="url" placeholder="https://..."/></div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-sm btn-danger" onclick="removeCard('vm-1')">🗑 Delete</button>
+            <button class="btn-sm btn-primary" onclick="saveCard('vm-1','Vastu Mistakes Article')">Save Article</button>
+          </div>
+        </div>
+
+        <div class="editor-card collapsed" id="vm-2">
+          <div class="card-header" onclick="toggleCard('vm-2')">
+            <div class="card-title-area"><div class="card-num">2</div><div><div class="card-title">North-East Zone: The Zone of Growth</div><div class="card-status">Published · Apr 2025</div></div></div>
+            <div class="card-actions"><span class="badge-status badge-live">LIVE</span><span class="toggle-arrow">▼</span></div>
+          </div>
+          <div class="card-body">
+            <div class="field"><label>Article Title</label><input type="text" value="North-East Zone: The Zone of Growth & Divinity"/></div>
+            <div class="field"><label>Publish Date</label><input type="date" value="2025-04-20"/></div>
+            <div class="field full"><label>Excerpt</label><textarea rows="3">Why the Eshanya (NE) corner is the most sacred zone in any structure and how to keep it energetically pure.</textarea></div>
+            <div class="field"><label>Thumbnail</label><div class="img-upload"><input type="file" accept="image/*"/><div class="upload-icon">🖼</div><div class="upload-text">Upload thumbnail</div></div></div>
+            <div class="field"><label>Category</label><select><option selected>Home Vastu</option><option>Office Vastu</option><option>Plot Selection</option><option>Vastu Remedies</option></select><label style="margin-top:8px">Read More URL</label><input type="url" placeholder="https://..."/></div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-sm btn-danger" onclick="removeCard('vm-2')">🗑 Delete</button>
+            <button class="btn-sm btn-primary" onclick="saveCard('vm-2','North-East Zone Article')">Save Article</button>
+          </div>
+        </div>
+
+        <div class="editor-card collapsed" id="vm-3">
+          <div class="card-header" onclick="toggleCard('vm-3')">
+            <div class="card-title-area"><div class="card-num">3</div><div><div class="card-title">Kitchen Placement & Agni Vastu</div><div class="card-status">Draft</div></div></div>
+            <div class="card-actions"><span class="badge-status badge-draft">DRAFT</span><span class="toggle-arrow">▼</span></div>
+          </div>
+          <div class="card-body">
+            <div class="field"><label>Article Title</label><input type="text" value="Kitchen Placement & Agni Vastu — Fire Element Guide"/></div>
+            <div class="field"><label>Publish Date</label><input type="date"/></div>
+            <div class="field full"><label>Excerpt</label><textarea rows="3">The kitchen represents the Agni element. Correct placement in the SE zone can significantly improve family health and harmony.</textarea></div>
+            <div class="field"><label>Thumbnail</label><div class="img-upload"><input type="file" accept="image/*"/><div class="upload-icon">🖼</div><div class="upload-text">Upload thumbnail</div></div></div>
+            <div class="field"><label>Category</label><select><option>Home Vastu</option><option>Office Vastu</option><option>Plot Selection</option><option>Vastu Remedies</option><option selected>Kitchen & Bedroom</option></select><label style="margin-top:8px">Read More URL</label><input type="url" placeholder="https://..."/></div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-sm btn-danger" onclick="removeCard('vm-3')">🗑 Delete</button>
+            <button class="btn-sm btn-primary" onclick="saveCard('vm-3','Kitchen Vastu Draft')">Save Article</button>
+          </div>
+        </div>
+
+      </div>
+      <div class="add-card-btn" style="margin-top:12px" onclick="addArticle('vastu-mag-cards','vm')">+ ADD NEW VASTU ARTICLE</div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         VASTU PLANS & ARCHITECTURE
+    ══════════════════════════════════ -->
+    <div class="section-panel" id="panel-vastu-plans">
+      <div class="section-title">🏛 Vastu Plans & Architecture</div>
+      <div class="section-desc">Manage the architectural / Government plan project cards shown in the dark Plans tile.</div>
+
+      <div class="info-bar">
+        <span class="info-icon">ℹ️</span>
+        <p>Each card represents a project type or plan service. Includes a thumbnail, title, short description, and a category badge (Residential / Commercial / Gov / Religious).</p>
+      </div>
+
+      <div class="cards-grid" id="plans-cards">
+
+        <div class="editor-card" id="pl-1">
+          <div class="card-header" onclick="toggleCard('pl-1')">
+            <div class="card-title-area"><div class="card-num">1</div><div><div class="card-title">Vastu-Compliant Residential Plan</div><div class="card-status">Residential · Active</div></div></div>
+            <div class="card-actions"><span class="badge-status badge-live">LIVE</span><span class="toggle-arrow">▼</span></div>
+          </div>
+          <div class="card-body">
+            <div class="field"><label>Project / Plan Title</label><input type="text" value="Vastu-Compliant Residential House Plan"/></div>
+            <div class="field"><label>Plan Category</label><select><option selected>Residential</option><option>Commercial</option><option>Government Approved</option><option>Religious / Temple</option><option>Interior Design</option></select></div>
+            <div class="field full"><label>Description</label><textarea rows="3">Complete Vastu-aligned floor plan for 2,000–4,000 sq ft homes. Includes energy zone analysis, main entrance placement and remedies map.</textarea></div>
+            <div class="field"><label>Project Image / Floor Plan</label><div class="img-upload"><input type="file" accept="image/*"/><div class="upload-icon">🏠</div><div class="upload-text">Upload floor plan image</div></div></div>
+            <div class="field">
+              <label>Badge Label</label>
+              <input type="text" value="VASTU CERTIFIED"/>
+              <label style="margin-top:8px">Starting Price (LKR)</label>
+              <input type="text" value="LKR 15,000"/>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-sm btn-danger" onclick="removeCard('pl-1')">🗑 Delete</button>
+            <button class="btn-sm btn-primary" onclick="saveCard('pl-1','Residential Plan')">Save</button>
+          </div>
+        </div>
+
+        <div class="editor-card collapsed" id="pl-2">
+          <div class="card-header" onclick="toggleCard('pl-2')">
+            <div class="card-title-area"><div class="card-num">2</div><div><div class="card-title">Government-Approved Site Plans</div><div class="card-status">Gov Approved · Active</div></div></div>
+            <div class="card-actions"><span class="badge-status badge-live">LIVE</span><span class="toggle-arrow">▼</span></div>
+          </div>
+          <div class="card-body">
+            <div class="field"><label>Project / Plan Title</label><input type="text" value="Government-Approved Site & Building Plans"/></div>
+            <div class="field"><label>Plan Category</label><select><option>Residential</option><option>Commercial</option><option selected>Government Approved</option><option>Religious / Temple</option></select></div>
+            <div class="field full"><label>Description</label><textarea rows="3">Certified architectural drawings for local authority approvals including UDA, CMC & Pradeshiya Sabha submissions with Vastu integration.</textarea></div>
+            <div class="field"><label>Project Image</label><div class="img-upload"><input type="file" accept="image/*"/><div class="upload-icon">📐</div><div class="upload-text">Upload plan image</div></div></div>
+            <div class="field"><label>Badge Label</label><input type="text" value="GOV APPROVED"/><label style="margin-top:8px">Starting Price (LKR)</label><input type="text" value="LKR 25,000"/></div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-sm btn-danger" onclick="removeCard('pl-2')">🗑 Delete</button>
+            <button class="btn-sm btn-primary" onclick="saveCard('pl-2','Gov Plans')">Save</button>
+          </div>
+        </div>
+
+        <div class="editor-card collapsed" id="pl-3">
+          <div class="card-header" onclick="toggleCard('pl-3')">
+            <div class="card-title-area"><div class="card-num">3</div><div><div class="card-title">Temple & Religious Architecture</div><div class="card-status">Religious · Active</div></div></div>
+            <div class="card-actions"><span class="badge-status badge-live">LIVE</span><span class="toggle-arrow">▼</span></div>
+          </div>
+          <div class="card-body">
+            <div class="field"><label>Project / Plan Title</label><input type="text" value="Temple & Agamic Religious Architecture"/></div>
+            <div class="field"><label>Plan Category</label><select><option>Residential</option><option>Commercial</option><option>Government Approved</option><option selected>Religious / Temple</option></select></div>
+            <div class="field full"><label>Description</label><textarea rows="3">Agamic-compliant temple design following Shilpa Shastra principles. Garbhagriha, mandapam and gopuram proportions calculated with traditional measurements.</textarea></div>
+            <div class="field"><label>Project Image</label><div class="img-upload"><input type="file" accept="image/*"/><div class="upload-icon">🛕</div><div class="upload-text">Upload temple design image</div></div></div>
+            <div class="field"><label>Badge Label</label><input type="text" value="AGAMIC DESIGN"/><label style="margin-top:8px">Starting Price (LKR)</label><input type="text" value="On Request"/></div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-sm btn-danger" onclick="removeCard('pl-3')">🗑 Delete</button>
+            <button class="btn-sm btn-primary" onclick="saveCard('pl-3','Temple Architecture')">Save</button>
+          </div>
+        </div>
+
+      </div>
+      <div class="add-card-btn" style="margin-top:12px" onclick="addArticle('plans-cards','pl')">+ ADD NEW PLAN / PROJECT</div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         INTERIOR DESIGN
+    ══════════════════════════════════ -->
+    <div class="section-panel" id="panel-interior">
+      <div class="section-title">🛋 Interior Design</div>
+      <div class="section-desc">Manage the interior design carousel slides shown in the homepage bottom section.</div>
+
+      <div class="info-bar">
+        <span class="info-icon">ℹ️</span>
+        <p>Each slide is a full-bleed background image with a caption. Upload a high-quality landscape image (min 1200×600px) per slide.</p>
+      </div>
+
+      <div class="cards-grid" id="interior-cards">
+
+        <div class="editor-card" id="id-1">
+          <div class="card-header" onclick="toggleCard('id-1')">
+            <div class="card-title-area"><div class="card-num">1</div><div><div class="card-title">Living Room — Vastu Modern</div><div class="card-status">Slide 1 · Active</div></div></div>
+            <div class="card-actions"><span class="badge-status badge-live">LIVE</span><span class="toggle-arrow">▼</span></div>
+          </div>
+          <div class="card-body">
+            <div class="field full"><label>Slide Title (Caption Heading)</label><input type="text" value="Vastu-Aligned Modern Living Room"/></div>
+            <div class="field full"><label>Caption Subtitle</label><input type="text" value="North-facing seating · Natural light zones · Calming earth tones"/></div>
+            <div class="field"><label>Background Image</label><div class="img-upload"><input type="file" accept="image/*"/><div class="upload-icon">🏠</div><div class="upload-text">Upload interior photo<br/>Min 1200×600px recommended</div></div></div>
+            <div class="field">
+              <label>Design Style Tag</label>
+              <select><option>Vastu Modern</option><option>Traditional</option><option>Minimalist</option><option>Luxury</option><option>Eco-Friendly</option></select>
+              <label style="margin-top:8px">Room Type</label>
+              <select><option>Living Room</option><option>Master Bedroom</option><option>Kitchen</option><option>Puja Room</option><option>Office</option><option>Exterior</option></select>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-sm btn-danger" onclick="removeCard('id-1')">🗑 Delete</button>
+            <button class="btn-sm btn-primary" onclick="saveCard('id-1','Interior Slide 1')">Save Slide</button>
+          </div>
+        </div>
+
+        <div class="editor-card collapsed" id="id-2">
+          <div class="card-header" onclick="toggleCard('id-2')">
+            <div class="card-title-area"><div class="card-num">2</div><div><div class="card-title">Puja Room — Sacred Space Design</div><div class="card-status">Slide 2 · Active</div></div></div>
+            <div class="card-actions"><span class="badge-status badge-live">LIVE</span><span class="toggle-arrow">▼</span></div>
+          </div>
+          <div class="card-body">
+            <div class="field full"><label>Slide Title</label><input type="text" value="Sacred Puja Room — North-East Placement"/></div>
+            <div class="field full"><label>Caption Subtitle</label><input type="text" value="Handcrafted wood mandapam · Pure copper idols · Agamic placement guide"/></div>
+            <div class="field"><label>Background Image</label><div class="img-upload"><input type="file" accept="image/*"/><div class="upload-icon">🛕</div><div class="upload-text">Upload interior photo</div></div></div>
+            <div class="field"><label>Design Style Tag</label><select><option>Vastu Modern</option><option selected>Traditional</option><option>Minimalist</option><option>Luxury</option></select><label style="margin-top:8px">Room Type</label><select><option>Living Room</option><option>Master Bedroom</option><option>Kitchen</option><option selected>Puja Room</option><option>Office</option></select></div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-sm btn-danger" onclick="removeCard('id-2')">🗑 Delete</button>
+            <button class="btn-sm btn-primary" onclick="saveCard('id-2','Interior Slide 2')">Save Slide</button>
+          </div>
+        </div>
+
+        <div class="editor-card collapsed" id="id-3">
+          <div class="card-header" onclick="toggleCard('id-3')">
+            <div class="card-title-area"><div class="card-num">3</div><div><div class="card-title">Master Bedroom — Vastu Luxury</div><div class="card-status">Slide 3 · Active</div></div></div>
+            <div class="card-actions"><span class="badge-status badge-live">LIVE</span><span class="toggle-arrow">▼</span></div>
+          </div>
+          <div class="card-body">
+            <div class="field full"><label>Slide Title</label><input type="text" value="Master Bedroom — Southwest Placement for Rest"/></div>
+            <div class="field full"><label>Caption Subtitle</label><input type="text" value="South-facing headboard · Balanced earth element · Warm ambient lighting"/></div>
+            <div class="field"><label>Background Image</label><div class="img-upload"><input type="file" accept="image/*"/><div class="upload-icon">🛏</div><div class="upload-text">Upload interior photo</div></div></div>
+            <div class="field"><label>Design Style Tag</label><select><option>Vastu Modern</option><option>Traditional</option><option>Minimalist</option><option selected>Luxury</option></select><label style="margin-top:8px">Room Type</label><select><option>Living Room</option><option selected>Master Bedroom</option><option>Kitchen</option><option>Puja Room</option></select></div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-sm btn-danger" onclick="removeCard('id-3')">🗑 Delete</button>
+            <button class="btn-sm btn-primary" onclick="saveCard('id-3','Interior Slide 3')">Save Slide</button>
+          </div>
+        </div>
+
+      </div>
+      <div class="add-card-btn" style="margin-top:12px" onclick="addArticle('interior-cards','id')">+ ADD NEW INTERIOR SLIDE</div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         SPIRITUAL MAGAZINE
+    ══════════════════════════════════ -->
+    <div class="section-panel" id="panel-spiritual">
+      <div class="section-title">🌸 Spiritual Magazine</div>
+      <div class="section-desc">Manage spiritual articles, yoga content and meditation guides.</div>
+
+      <div class="info-bar">
+        <span class="info-icon">ℹ️</span>
+        <p>These articles feed the Spiritual & Yoga section of your website. Include a category tag for filtering (Meditation / Yoga / Mantra / Devotion / Ayurveda).</p>
+      </div>
+
+      <div class="cards-grid" id="spiritual-cards">
+
+        <div class="editor-card" id="sp-1">
+          <div class="card-header" onclick="toggleCard('sp-1')">
+            <div class="card-title-area"><div class="card-num">1</div><div><div class="card-title">108 Names of Lord Ganesha — Ashtottara</div><div class="card-status">Published · Jun 2025</div></div></div>
+            <div class="card-actions"><span class="badge-status badge-live">LIVE</span><span class="toggle-arrow">▼</span></div>
+          </div>
+          <div class="card-body">
+            <div class="field"><label>Article Title</label><input type="text" value="108 Names of Lord Ganesha — Ashtottara Shatanamavali"/></div>
+            <div class="field"><label>Publish Date</label><input type="date" value="2025-06-01"/></div>
+            <div class="field full"><label>Excerpt / Summary</label><textarea rows="3">Chanting the 108 divine names of Ganesha removes obstacles, bestows wisdom and attracts auspiciousness. Includes transliteration and meaning for each name.</textarea></div>
+            <div class="field"><label>Thumbnail</label><div class="img-upload"><input type="file" accept="image/*"/><div class="upload-icon">🌸</div><div class="upload-text">Upload article thumbnail</div></div></div>
+            <div class="field">
+              <label>Spiritual Category</label>
+              <select><option selected>Devotion & Stotras</option><option>Meditation</option><option>Yoga</option><option>Mantra & Tantra</option><option>Ayurveda</option><option>Festival Guide</option></select>
+              <label style="margin-top:8px">Read More URL</label>
+              <input type="url" placeholder="https://..."/>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-sm btn-danger" onclick="removeCard('sp-1')">🗑 Delete</button>
+            <button class="btn-sm btn-primary" onclick="saveCard('sp-1','Ganesha 108 Names')">Save Article</button>
+          </div>
+        </div>
+
+        <div class="editor-card collapsed" id="sp-2">
+          <div class="card-header" onclick="toggleCard('sp-2')">
+            <div class="card-title-area"><div class="card-num">2</div><div><div class="card-title">Surya Namaskar — The 12-Step Solar Salutation</div><div class="card-status">Published · May 2025</div></div></div>
+            <div class="card-actions"><span class="badge-status badge-live">LIVE</span><span class="toggle-arrow">▼</span></div>
+          </div>
+          <div class="card-body">
+            <div class="field"><label>Article Title</label><input type="text" value="Surya Namaskar — The 12-Step Solar Salutation for Vitality"/></div>
+            <div class="field"><label>Publish Date</label><input type="date" value="2025-05-22"/></div>
+            <div class="field full"><label>Excerpt</label><textarea rows="3">Perform Surya Namaskar facing east at sunrise for maximum benefit. Each step corresponds to a Sun mantra and awakens prana in the body.</textarea></div>
+            <div class="field"><label>Thumbnail</label><div class="img-upload"><input type="file" accept="image/*"/><div class="upload-icon">☀️</div><div class="upload-text">Upload article thumbnail</div></div></div>
+            <div class="field"><label>Spiritual Category</label><select><option>Devotion & Stotras</option><option>Meditation</option><option selected>Yoga</option><option>Mantra & Tantra</option><option>Ayurveda</option></select><label style="margin-top:8px">Read More URL</label><input type="url" placeholder="https://..."/></div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-sm btn-danger" onclick="removeCard('sp-2')">🗑 Delete</button>
+            <button class="btn-sm btn-primary" onclick="saveCard('sp-2','Surya Namaskar Article')">Save Article</button>
+          </div>
+        </div>
+
+        <div class="editor-card collapsed" id="sp-3">
+          <div class="card-header" onclick="toggleCard('sp-3')">
+            <div class="card-title-area"><div class="card-num">3</div><div><div class="card-title">Om Meditation — 21-Day Sadhana Guide</div><div class="card-status">Draft</div></div></div>
+            <div class="card-actions"><span class="badge-status badge-draft">DRAFT</span><span class="toggle-arrow">▼</span></div>
+          </div>
+          <div class="card-body">
+            <div class="field"><label>Article Title</label><input type="text" value="Om Meditation — 21-Day Sadhana Guide for Beginners"/></div>
+            <div class="field"><label>Publish Date</label><input type="date"/></div>
+            <div class="field full"><label>Excerpt</label><textarea rows="3">A structured 21-day program to establish a daily Om meditation practice. Includes timing, duration, mudras and mantras for each week.</textarea></div>
+            <div class="field"><label>Thumbnail</label><div class="img-upload"><input type="file" accept="image/*"/><div class="upload-icon">🕉</div><div class="upload-text">Upload article thumbnail</div></div></div>
+            <div class="field"><label>Spiritual Category</label><select><option>Devotion & Stotras</option><option selected>Meditation</option><option>Yoga</option><option>Mantra & Tantra</option></select><label style="margin-top:8px">Read More URL</label><input type="url" placeholder="https://..."/></div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-sm btn-danger" onclick="removeCard('sp-3')">🗑 Delete</button>
+            <button class="btn-sm btn-primary" onclick="saveCard('sp-3','Om Meditation Draft')">Save Article</button>
+          </div>
+        </div>
+
+      </div>
+      <div class="add-card-btn" style="margin-top:12px" onclick="addArticle('spiritual-cards','sp')">+ ADD NEW SPIRITUAL ARTICLE</div>
+    </div>
+
+    <!-- ══════════════════════════════════
+         SITE SETTINGS
+    ══════════════════════════════════ -->
+    <div class="section-panel" id="panel-site-settings">
+      <div class="section-title">⚙️ Site Settings</div>
+      <div class="section-desc">Global settings applied across the Sree Ganesh website.</div>
+
+      <div class="editor-card" id="settings-card">
+        <div class="card-header">
+          <div class="card-title-area"><div class="card-num">⚙</div><div><div class="card-title">Contact & Identity</div></div></div>
+        </div>
+        <div class="card-body triple">
+          <div class="field"><label>Site Name</label><input type="text" value="Sree Ganesh Astrology & Vastu"/></div>
+          <div class="field"><label>Primary Phone</label><input type="text" value="071 123 4567"/></div>
+          <div class="field"><label>Secondary Phone</label><input type="text" value="077 123 4567"/></div>
+          <div class="field full"><label>Address</label><input type="text" value="No. 123, Temple Road, Battaramulla, Sri Lanka"/></div>
+          <div class="field"><label>Email</label><input type="text" value="info@sreeganeshvastu.lk"/></div>
+          <div class="field"><label>Website URL</label><input type="text" value="www.sreeganeshvastu.lk"/></div>
+          <div class="field"><label>WhatsApp Number</label><input type="text" value="94711234567"/></div>
+          <div class="field"><label>Facebook URL</label><input type="url" placeholder="https://facebook.com/..."/></div>
+          <div class="field"><label>YouTube URL</label><input type="url" placeholder="https://youtube.com/@..."/></div>
+          <div class="field"><label>Instagram URL</label><input type="url" placeholder="https://instagram.com/..."/></div>
+          <div class="field"><label>Tagline</label><input type="text" value="Transform Your Life Through Vedic Wisdom"/></div>
+          <div class="field"><label>Trust Bar — Years Experience</label><input type="number" value="15" min="1" max="100"/></div>
+        </div>
+        <div class="card-footer">
+          <button class="btn-sm btn-primary" onclick="saveCard('settings-card','Site Settings')">Save Settings</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">✓ Saved successfully</div>
+
+<script>
+  // ── Section navigation
+  function showSection(name) {
+    document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    event.currentTarget.classList.add('active');
+  }
+
+  // ── Toggle card collapse
+  function toggleCard(id) {
+    document.getElementById(id).classList.toggle('collapsed');
+  }
+
+  // ── Save card (UI feedback)
+  // ── YOUR APPS SCRIPT URL ──
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxWIUf0AmSGxFrHB7lwklLxMZef0sKUyNCJ4a98_yYKvae60az82J6_sN8SvIMZLwCJ/exec';
+
+// ── Collect all pooja events from editor and push to sheet ──
+async function saveSection(sheetName, headers, rows) {
+  await fetch(SHEET_URL, {
+    method: 'POST',
+    body: JSON.stringify({ action: 'write', sheet: sheetName, headers, rows })
+  });
+  showToast('✓ Saved to Google Sheet!', 'success');
+}
+
+// ── Save all pooja events ──
+function savePoojaEvents() {
+  const cards = document.querySelectorAll('#pooja-cards .editor-card');
+  const rows = [];
+  cards.forEach(card => {
+    const inputs = card.querySelectorAll('input, select, textarea');
+    rows.push([...inputs].map(i => i.value));
+  });
+  saveSection('pooja_events',
+    ['title','date','time','status','location','description','image_url','whatsapp_link','fee'],
+    rows
+  );
+}
+
+// ── Save all recommendations ──
+function saveRecommendations() {
+  const cards = document.querySelectorAll('#recom-cards .editor-card');
+  const rows = [];
+  cards.forEach(card => {
+    const inputs = card.querySelectorAll('input, textarea');
+    rows.push([...inputs].map(i => i.value));
+  });
+  saveSection('recommendations', ['icon','title','description','tag'], rows);
+}
+
+// ── Save all ──
+function saveAll() {
+  savePoojaEvents();
+  saveRecommendations();
+  // add more sections here as needed
+  showToast('✦ All sections saved to Google Sheet!', 'success');
+}
+
+  // ── Remove card
+  function removeCard(id) {
+    if (!confirm('Delete this item? This cannot be undone.')) return;
+    const el = document.getElementById(id);
+    if (el) { el.style.opacity = '0'; el.style.height = el.offsetHeight + 'px'; setTimeout(() => { el.style.height = '0'; el.style.margin = '0'; el.style.padding = '0'; el.style.border = 'none'; setTimeout(() => el.remove(), 300); }, 50); el.style.transition = 'all 0.3s ease'; }
+    showToast('Item deleted', 'error');
+  }
+
+  // ── Add new pooja event
+  let poojaCount = 4;
+  function addPoojaEvent() {
+    poojaCount++;
+    const n = poojaCount;
+    const card = `
+    <div class="editor-card" id="pe-${n}" style="opacity:0;transition:opacity 0.3s">
+      <div class="card-header" onclick="toggleCard('pe-${n}')">
+        <div class="card-title-area">
+          <div class="card-num">${n}</div>
+          <div><div class="card-title">New Pooja Event</div><div class="card-status">Not saved yet</div></div>
+        </div>
+        <div class="card-actions"><span class="badge-status badge-draft">DRAFT</span><span class="toggle-arrow">▼</span></div>
+      </div>
+      <div class="card-body">
+        <div class="field"><label>Event Title</label><input type="text" placeholder="e.g. Satyanarayana Pooja"/></div>
+        <div class="field"><label>Event Date</label><input type="date"/></div>
+        <div class="field"><label>Time</label><input type="time"/></div>
+        <div class="field"><label>Status</label><select><option selected>Upcoming</option><option>Live / Ongoing</option><option>Completed</option></select></div>
+        <div class="field full"><label>Location / Venue</label><input type="text" placeholder="Temple or venue name"/></div>
+        <div class="field full"><label>Description</label><textarea rows="3" placeholder="Describe the event..."></textarea></div>
+        <div class="field"><label>Event Image</label><div class="img-upload"><input type="file" accept="image/*"/><div class="upload-icon">🖼</div><div class="upload-text">Upload image</div></div></div>
+        <div class="field"><label>WhatsApp Booking Link</label><input type="url" placeholder="https://wa.me/..."/><label style="margin-top:8px">Entry Fee</label><input type="text" placeholder="Free / LKR 500..."/></div>
+      </div>
+      <div class="card-footer">
+        <button class="btn-sm btn-danger" onclick="removeCard('pe-${n}')">🗑 Delete</button>
+        <button class="btn-sm btn-primary" onclick="saveCard('pe-${n}','New Event')">Save Event</button>
+      </div>
+    </div>`;
+    const container = document.getElementById('pooja-cards');
+    const tmp = document.createElement('div');
+    tmp.innerHTML = card;
+    const newCard = tmp.firstElementChild;
+    container.insertBefore(newCard, container.lastElementChild);
+    requestAnimationFrame(() => { newCard.style.opacity = '1'; });
+    newCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // ── Generic add article
+  const counters = {};
+  function addArticle(containerId, prefix) {
+    if (!counters[prefix]) counters[prefix] = 4;
+    counters[prefix]++;
+    const n = counters[prefix];
+    const labels = { jt: ['Article Title','Jothishya Magazine'], vm: ['Article Title','Vastu Magazine'], pl: ['Plan / Project Title','Vastu Plans'], id: ['Slide Title','Interior Design'], sp: ['Article Title','Spiritual Magazine'] };
+    const [titleLabel, sectionName] = labels[prefix] || ['Title', 'Section'];
+    const card = `
+    <div class="editor-card" id="${prefix}-${n}" style="opacity:0;transition:opacity 0.3s">
+      <div class="card-header" onclick="toggleCard('${prefix}-${n}')">
+        <div class="card-title-area"><div class="card-num">${n}</div><div><div class="card-title">New ${sectionName} Entry</div><div class="card-status">Draft</div></div></div>
+        <div class="card-actions"><span class="badge-status badge-draft">DRAFT</span><span class="toggle-arrow">▼</span></div>
+      </div>
+      <div class="card-body">
+        <div class="field"><label>${titleLabel}</label><input type="text" placeholder="Enter title..."/></div>
+        <div class="field"><label>Date</label><input type="date"/></div>
+        <div class="field full"><label>Description / Excerpt</label><textarea rows="3" placeholder="Enter content..."></textarea></div>
+        <div class="field"><label>Image</label><div class="img-upload"><input type="file" accept="image/*"/><div class="upload-icon">🖼</div><div class="upload-text">Upload image</div></div></div>
+        <div class="field"><label>URL / Link</label><input type="url" placeholder="https://..."/></div>
+      </div>
+      <div class="card-footer">
+        <button class="btn-sm btn-danger" onclick="removeCard('${prefix}-${n}')">🗑 Delete</button>
+        <button class="btn-sm btn-primary" onclick="saveCard('${prefix}-${n}','New Entry')">Save</button>
+      </div>
+    </div>`;
+    const container = document.getElementById(containerId);
+    const addBtn = container.parentElement.querySelector('.add-card-btn');
+    const tmp = document.createElement('div');
+    tmp.innerHTML = card;
+    const newCard = tmp.firstElementChild;
+    container.appendChild(newCard);
+    requestAnimationFrame(() => { newCard.style.opacity = '1'; });
+    newCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // ── Save all
+  function saveAll() {
+    showToast('✦ All sections saved successfully!', 'success');
+  }
+
+  // ── Export JSON (stub)
+  function exportJSON() {
+    const data = { exported: new Date().toISOString(), note: 'Connect this editor to your backend API to export real data.' };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'sreeganesh-content.json';
+    a.click();
+    showToast('⬇ JSON exported!', 'success');
+  }
+
+  // ── Toast
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // ── Image preview on upload
+  document.addEventListener('change', function(e) {
+    if (e.target.type === 'file' && e.target.accept === 'image/*') {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      const uploadDiv = e.target.closest('.img-upload');
+      reader.onload = function(ev) {
+        let preview = uploadDiv.querySelector('.img-preview');
+        if (!preview) { preview = document.createElement('img'); preview.className = 'img-preview'; uploadDiv.appendChild(preview); }
+        preview.src = ev.target.result;
+        preview.style.display = 'block';
+        uploadDiv.querySelector('.upload-icon') && (uploadDiv.querySelector('.upload-icon').style.display = 'none');
+        uploadDiv.querySelector('.upload-text') && (uploadDiv.querySelector('.upload-text').style.display = 'none');
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // ── Keyboard shortcut: Ctrl+S
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      saveAll();
+    }
+  });
+</script>
+</body>
+</html>

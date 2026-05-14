@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sree Ganesh Astrology & Vastu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --maroon: #4a0e0e;
+      --maroon-dark: #3a0808;
+      --saffron: #C8922A;
+      --saffron-light: #e6a832;
+      --gold: #D4AF37;
+      --cream: #FDF6EC;
+      --white: #ffffff;
+      --text-dark: #2c1a1a;
+      --text-muted: #888;
+      --green-wa: #25D366;
+      --green-wa-dark: #1da851;
+      --border: #e8d5b5;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--text-dark); }
+
+    /* ───────────────── HEADER ───────────────── */
+    header { position: sticky; top: 0; z-index: 200; background: var(--maroon); box-shadow: 0 2px 8px rgba(0,0,0,0.35); }
+    .header-top { display: flex; align-items: center; justify-content: space-between; padding: 10px 32px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .logo-area { display: flex; align-items: center; gap: 12px; }
+    .logo-area img { width: 58px; height: 58px; object-fit: contain; border-radius: 50%; border: 2px solid var(--gold); }
+    .logo-text h1 { font-family: 'Cinzel', serif; font-size: 17px; font-weight: 900; color: var(--gold); letter-spacing: 1px; line-height: 1.1; }
+    .logo-text .subtitle { font-size: 10px; color: var(--gold); font-weight: 700; letter-spacing: 1px; }
+    .logo-text .tagline { font-size: 10px; color: #e8d5b5; font-style: italic; }
+    .header-right { display: flex; align-items: center; gap: 16px; }
+    .social-icons { display: flex; gap: 7px; }
+    .soc-btn { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; text-decoration: none; color: white; font-weight: 700; transition: transform 0.2s, opacity 0.2s; }
+    .soc-btn:hover { transform: scale(1.15); opacity: 0.9; }
+    .fb { background: #1877F2; } .yt { background: #FF0000; } .ig { background: linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); } .tk { background: #010101; }
+    .phone-block { display: flex; align-items: center; gap: 8px; }
+    .phone-icon { width: 34px; height: 34px; background: var(--saffron); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 15px; }
+    .phone-block .number { font-weight: 700; font-size: 14px; color: white; }
+    .phone-block .call-label { font-size: 10px; color: #e8d5b5; }
+    .btn-book { background: var(--saffron); color: white; border: none; padding: 9px 20px; font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; letter-spacing: 1px; cursor: pointer; border-radius: 3px; transition: background 0.2s; white-space: nowrap; }
+    .btn-book:hover { background: var(--saffron-light); }
+    nav { background: var(--maroon-dark); display: flex; justify-content: center; flex-wrap: wrap; }
+    nav a { color: #e8d5b5; text-decoration: none; font-size: 11px; font-weight: 700; letter-spacing: 0.4px; padding: 11px 13px; display: block; transition: color 0.2s; border-bottom: 2px solid transparent; }
+    nav a:hover, nav a.active { color: var(--saffron-light); border-bottom-color: var(--saffron-light); }
+
+    /* ───────────────── PAGE WRAPPER ───────────────── */
+    .page { max-width: 1280px; margin: 0 auto; padding: 18px 20px; display: flex; flex-direction: column; gap: 16px; }
+
+    /* ═══════════════════════════════════════════════════
+       ROW 1 — CAROUSEL SECTION  (3-col split)
+       Left 50% = FB Photo Carousel
+       Middle ~17% = Pooja Events
+       Right ~33% = Vedic Readings + Bookings (stacked)
+    ═══════════════════════════════════════════════════ */
+    .row-carousel { display: grid; grid-template-columns: 1fr 0.34fr 0.66fr; gap: 14px; height: 500px; }
+
+    /* LEFT — Facebook Photo Carousel */
+    .fb-carousel { background: var(--maroon-dark); border-radius: 8px; overflow: hidden; position: relative; height: 100%;}
+    .fb-carousel .carousel-slides { height: 100%; position: relative; }
+    .fb-carousel .slide { position: absolute; inset: 0; opacity: 0; transition: opacity 0.9s ease; background-size: cover; background-position: center; }
+    .fb-carousel .slide.active { opacity: 1; }
+    .slide-1 { background-image: linear-gradient(rgba(74,14,14,0.45),rgba(74,14,14,0.45)), url('Sri Vastu Homes/Aadithya\ gurukula.jpeg'); }
+    .slide-2 { background-image: linear-gradient(rgba(74,14,14,0.45),rgba(74,14,14,0.45)), url('Sri Vastu Homes/Sri\ Swarna\ Kaala\ Bairawan.jpeg'); }
+    .slide-3 { background-image: linear-gradient(rgba(74,14,14,0.45),rgba(74,14,14,0.45)), url('Sri Vastu Homes/Env.jpeg'); }
+    .slide-4 { background-image: linear-gradient(rgba(74,14,14,0.45),rgba(74,14,14,0.45)), url('Sri Vastu Homes/Sri\ Vastu\ homes\ office.jpeg'); }
+    .slide-5 { background: #000;}
+    .slide-5 video {width: 100%;height: 100%;object-fit: cover;display: block;}
+
+
+    .fb-carousel .slide-caption { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(74,14,14,0.9)); padding: 30px 16px 14px; color: white; }
+    .fb-carousel .slide-caption h3 { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700; color: var(--gold); margin-bottom: 3px; }
+    .fb-carousel .slide-caption p { font-size: 11px; color: #e8d5b5; }
+    .fb-carousel .fb-badge { position: absolute; top: 12px; left: 12px; background: #1877F2; color: white; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 3px; display: flex; align-items: center; gap: 5px; }
+    .carousel-dots { position: absolute; bottom: 10px; right: 14px; display: flex; gap: 5px; }
+    .carousel-dots .dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: background 0.3s; }
+    .carousel-dots .dot.active { background: var(--gold); }
+    .carousel-prev, .carousel-next { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(74,14,14,0.6); color: white; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: background 0.2s; z-index: 5; }
+    .carousel-prev { left: 8px; } .carousel-next { right: 8px; }
+    .carousel-prev:hover, .carousel-next:hover { background: var(--saffron); }
+
+    /* MIDDLE — Pooja Events (thin column) */
+    .pooja-events-col { background: white; border-radius: 8px; border: 2px solid var(--maroon); display: flex; flex-direction: column; overflow: hidden; height: 420px; align-self: flex-start;}
+    .col-header { background: var(--maroon); padding: 10px 12px; color: var(--gold); font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-align: center; border-bottom: 2px solid var(--saffron); }
+    .pooja-event-list { flex: 1; overflow-y: auto; padding: 8px 10px; display: flex; flex-direction: column; gap: 7px; }
+    .pe-item { border-bottom: 1px solid #f0e0d0; padding-bottom: 7px; cursor: pointer; transition: background 0.2s; border-radius: 4px; padding: 6px 7px; }
+    .pe-item:hover { background: #fff8ef; }
+    .pe-item img { width: 100%; height: 55px; object-fit: cover; border-radius: 4px; margin-bottom: 5px; }
+    .pe-item h4 { font-family: 'Cinzel', serif; font-size: 9.5px; font-weight: 700; color: var(--maroon); margin-bottom: 2px; line-height: 1.3; }
+    .pe-item .pe-date { font-size: 9px; color: var(--saffron); font-weight: 700; }
+    .pe-item .pe-btn { display: inline-block; margin-top: 4px; background: var(--maroon); color: white; font-size: 8.5px; font-weight: 700; padding: 2px 7px; border-radius: 2px; border: none; cursor: pointer; }
+    .col-footer { padding: 8px; border-top: 1px solid #f0e0d0; text-align: center; }
+    .col-footer a { font-size: 10px; color: var(--saffron); font-weight: 700; text-decoration: none; }
+
+    /* RIGHT — Stacked: top Vedic Readings, bottom Bookings */
+    .right-col { isplay: grid; grid-template-columns: 1fr 0.34fr 0.66fr; gap: 14px; height: 500px; }
+
+    /* Vedic Readings (top ~40%) */
+    .vedic-readings-tile { background: var(--maroon-dark); border-radius: 8px; overflow: hidden; position: relative; flex: 0 0 150px; }
+    .vr-bg { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(74,14,14,0.8) 0%, rgba(58,8,8,0.95) 100%), url('https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=600&q=80') center/cover; }
+    .vr-content { position: relative; z-index: 1; padding: 16px 18px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
+    .vr-content h3 { font-family: 'Cinzel', serif; font-size: 14px; font-weight: 900; color: var(--gold); letter-spacing: 0.5px; }
+    .vr-content p { font-size: 11px; color: #e8d5b5; margin-top: 5px; line-height: 1.4; }
+    .vr-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+    .vr-tag { background: rgba(200,146,42,0.25); color: var(--saffron-light); font-size: 9px; font-weight: 700; padding: 3px 7px; border-radius: 10px; border: 1px solid rgba(200,146,42,0.4); }
+    .vr-btn { margin-top: 12px; background: var(--saffron); color: white; border: none; padding: 6px 130px; font-family: 'Cinzel', serif; font-size: 10px; font-weight: 700; border-radius: 3px; cursor: pointer; align-self: flex-start; transition: background 0.2s; }
+    .vr-btn:hover { background: var(--saffron-light); }
+
+    /* Booking (bottom ~60%) */
+    .booking-tile { background: var(--cream); border-radius: 8px; border: 1px solid var(--border); padding: 14px 16px; flex: 1; overflow-y: auto; }
+    .booking-tile h3 { font-family: 'Cinzel', serif; font-size: 12px; font-weight: 700; color: var(--maroon); margin-bottom: 3px; }
+    .booking-tile p.sub { font-size: 10px; color: var(--text-muted); margin-bottom: 10px; }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+    .ff { position: relative; margin-bottom: 8px; }
+    .ff input, .ff select { width: 100%; padding: 8px 10px 8px 26px; border: 1px solid #ddd; border-radius: 4px; font-size: 11px; font-family: 'Lato', sans-serif; color: var(--text-dark); background: white; appearance: none; -webkit-appearance: none; }
+    .ff input:focus, .ff select:focus { outline: none; border-color: var(--saffron); }
+    .ff .fi { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--text-muted); pointer-events: none; }
+    .btn-book-now { width: 100%; background: var(--maroon); color: white; border: none; padding: 10px; font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; border-radius: 4px; transition: background 0.2s; }
+    .btn-book-now:hover { background: var(--maroon-dark); }
+    .wa-mini { display: flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 11px; color: var(--green-wa-dark); font-weight: 700; text-decoration: none; }
+    .wa-mini:hover { text-decoration: underline; }
+
+    /* ═══════════════════════════════════════════════════
+       SERVICES STRIP
+    ═══════════════════════════════════════════════════ 
+    .services-strip { background: white; border-radius: 8px; padding: 20px; }
+    .services-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 12px; }
+    .service-card { background: white; border: 1px solid #f0e0d0; border-top: 3px solid var(--saffron); border-radius: 6px; padding: 16px 12px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.06); transition: box-shadow 0.2s, transform 0.2s; cursor: pointer; }
+    .service-card:hover { box-shadow: 0 5px 18px rgba(107,26,26,0.13); transform: translateY(-2px); }
+    .service-icon { width: 46px; height: 46px; border-radius: 50%; border: 2px solid var(--saffron); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 20px; background: #fff8ef; }
+    .service-card h3 { font-family: 'Cinzel', serif; font-size: 10px; font-weight: 700; color: var(--maroon); margin-bottom: 6px; letter-spacing: 0.3px; }
+    .service-card p { font-size: 10px; color: var(--text-muted); line-height: 1.45; margin-bottom: 8px; }
+    .service-card a { color: var(--saffron); font-size: 10px; font-weight: 700; text-decoration: none; }*/
+
+    /* ═══════════════════════════════════════════════════
+       ROW 3 — 3 TILES: Jothishya Magazine | Gems | About Me
+    ═══════════════════════════════════════════════════ */
+    .row-3col { display: grid; grid-template-columns: 1.60fr 0.6fr 1fr; gap: 14px; max-height: 900px; margin: 0 auto; width: 100%; }
+
+    /* Jothishya Magazine */
+    .mag-tile { background: var(--maroon-dark); border-radius: 8px; overflow: hidden; color: white; display: flex; flex-direction: column; min-height: 500px;}
+    .mag-tile .col-header { font-size: 12px; }
+    .mag-articles { flex: 1; padding: 10px 12px; display: flex; flex-direction: column; gap: 9px; }
+    .art-item { display: flex; gap: 9px; align-items: flex-start; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 9px; cursor: pointer; }
+    .art-item:last-child { border-bottom: none; }
+    .art-img { width: 56px; height: 44px; object-fit: cover; border-radius: 4px; flex-shrink: 0; }
+    .art-body h4 { font-size: 11px; font-weight: 700; color: white; margin-bottom: 2px; line-height: 1.35; }
+    .art-body .art-date { font-size: 9.5px; color: #b0a090; margin-bottom: 3px; }
+    .art-body a { font-size: 10px; color: var(--saffron-light); font-weight: 700; text-decoration: none; }
+    .mag-footer { padding: 10px 12px; }
+    .btn-all { width: 100%; background: var(--saffron); color: white; border: none; padding: 9px; font-family: 'Cinzel', serif; font-size: 10.5px; font-weight: 700; cursor: pointer; border-radius: 4px; transition: background 0.2s; }
+    .btn-all:hover { background: var(--saffron-light); }
+
+    /* Gems tile */
+    .gems-tile { background: white; border-radius: 8px; border: 2px solid var(--maroon); overflow: hidden; display: flex; flex-direction: column; min-height: 300px;}
+    .gems-grid { padding: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 9px; flex: 1; }
+    .gem-card { text-align: center; background: var(--cream); border-radius: 6px; padding: 10px 8px; border: 1px solid #f0d8b0; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+    .gem-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(74,14,14,0.12); }
+    .gem-card .gem-emoji { font-size: 24px; margin-bottom: 5px; display: block; }
+    .gem-card h4 { font-family: 'Cinzel', serif; font-size: 9px; font-weight: 700; color: var(--maroon); margin-bottom: 2px; }
+    .gem-card p { font-size: 9px; color: var(--text-muted); line-height: 1.3; }
+    .gems-footer { padding: 10px 12px; border-top: 1px solid #f0e0d0; }
+
+    /* About Me tile */
+    .about-tile { 
+  border-radius: 8px; 
+  overflow: hidden; 
+  display: flex; 
+  flex-direction: column;
+  position: relative;
+  background-image: url('sri vastu homes/Prof\ pic.jpeg');
+  background-size: cover;
+  background-position: center top;
+  min-height: 40px;
+}
+.about-tile::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom,rgba(58,8,8,0.80) 0%, rgba(58,8,8,0) 28%, rgba(58,8,8,0) 55%, rgba(58,8,8,0.88) 75%, rgba(58,8,8,0.97) 100% );
+  z-index: 0;
+}
+.about-tile > * { position: relative; z-index: 1; }
+.about-content { padding: 0; flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center;justify-content: space-between;  /* title top, stats bottom */}
+.abt-con2 {padding: 200px 20px 0px; flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center;justify-content: space-between;}
+.about-avatar { display: none; }
+.about-content h3 { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 2px; }
+.about-content .about-title { font-size: 10px; color: var(--saffron-light); font-weight: 700; letter-spacing: 0.5px; margin-bottom: 8px; }
+.about-content p { font-size: 11px; color: #e8d5b5; line-height: 1.6; }
+.about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; width: 80%; }
+.abt-stat { background: rgba(74,14,14,0.7); border: 1px solid rgba(200,146,42,0.4); border-radius: 5px; padding: 7px; text-align: center; }
+.abt-stat .abt-num { font-family: 'Cinzel', serif; font-size: 16px; font-weight: 900; color: var(--gold); display: block; }
+.abt-stat .abt-lbl { font-size: 8.5px; color: #e8d5b5; }
+.about-footer { padding: 10px 16px; border-top: 1px solid rgba(255,255,255,0.15); text-align: center; }
+
+    /* ═══════════════════════════════════════════════════
+       ROW 4 — Vastu Maga | On Gov Plans / Architecture | Location Map
+    ═══════════════════════════════════════════════════ */
+    .row-4col { display: grid; grid-template-columns: 0.8fr 0.5fr 1.3fr; gap: 14px; }
+
+    /* Vastu Magazine */
+    .vastu-tile { background: white; border-radius: 8px; border: 2px solid var(--maroon); overflow: hidden; display: flex; flex-direction: column; }
+    .vastu-articles { flex: 1; padding: 10px 12px; display: flex; flex-direction: column; gap: 9px; }
+    .vastu-art { display: flex; gap: 9px; align-items: flex-start; border-bottom: 1px solid #f0e0d0; padding-bottom: 9px; }
+    .vastu-art:last-child { border-bottom: none; }
+    .vastu-art img { width: 56px; height: 44px; object-fit: cover; border-radius: 4px; flex-shrink: 0; }
+    .vastu-art h4 { font-size: 11px; font-weight: 700; color: var(--maroon); margin-bottom: 2px; line-height: 1.35; }
+    .vastu-art .v-date { font-size: 9.5px; color: var(--text-muted); margin-bottom: 3px; }
+    .vastu-art a { font-size: 10px; color: var(--saffron); font-weight: 700; text-decoration: none; }
+    .vastu-footer { padding: 10px 12px; border-top: 1px solid #f0e0d0; }
+
+    /* On-Gov Plans / Architecture */
+    .plans-tile { background: var(--maroon-dark); border-radius: 8px; overflow: hidden; color: white; display: flex; flex-direction: column; }
+    .plans-body { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 9px; }
+    .plan-item { display: flex; gap: 9px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 9px; align-items: flex-start; cursor: pointer; }
+    .plan-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .plan-item img { width: 56px; height: 44px; object-fit: cover; border-radius: 4px; flex-shrink: 0; }
+    .plan-info h4 { font-size: 10.5px; font-weight: 700; color: white; margin-bottom: 2px; line-height: 1.35; }
+    .plan-info p { font-size: 9.5px; color: #b0a090; line-height: 1.3; margin-bottom: 3px; }
+    .plan-badge { display: inline-block; background: rgba(200,146,42,0.3); color: var(--saffron-light); font-size: 8px; font-weight: 700; padding: 2px 6px; border-radius: 2px; }
+    .plans-footer { padding: 10px 12px; border-top: 1px solid rgba(255,255,255,0.08); }
+
+    /* Location Map */
+    .map-tile { background: white; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; }
+    .map-embed { flex: 1; min-height: 180px; background: #e8f0e0; position: relative; overflow: hidden; }
+    .map-embed iframe { width: 100%; height: 100%; border: none; display: block; }
+    .map-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, #e8ede0, #d4e0cc); color: #4a7a4a; gap: 8px; }
+    .map-placeholder .map-pin { font-size: 36px; }
+    .map-placeholder p { font-size: 11px; font-weight: 700; color: #2a5a2a; text-align: center; padding: 0 12px; }
+    .map-info { padding: 10px 14px; border-top: 1px solid var(--border); }
+    .map-info h4 { font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; color: var(--maroon); margin-bottom: 5px; }
+    .map-info p { font-size: 10px; color: #555; line-height: 1.5; }
+    .map-directions { display: flex; gap: 7px; margin-top: 8px; }
+    .map-btn { flex: 1; background: var(--maroon); color: white; border: none; padding: 7px; font-size: 10px; font-weight: 700; border-radius: 3px; cursor: pointer; font-family: 'Cinzel', serif; transition: background 0.2s; }
+    .map-btn:hover { background: var(--saffron); }
+    .map-btn.wa { background: var(--green-wa); }
+    .map-btn.wa:hover { background: var(--green-wa-dark); }
+
+    /* Interior Carousel */
+    .interior-tile { background: white; border-radius: 8px; border: 2px solid var(--maroon); overflow: hidden; display: flex; flex-direction: column; }
+    .interior-carousel { position: relative; flex: 3; height: 350px; }
+    /*display: grid; grid-template-columns: 1fr 0.34fr 0.66fr; gap: 14px; height: 500px*/
+    .int-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 0.6s; background-size: cover; background-position: center; }
+    .int-slide.active { opacity: 1; }
+    .int-prev, .int-next { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(74,14,14,0.65); color: white; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 16px; z-index: 5; }
+    .int-prev { left: 8px; } .int-next { right: 8px; }
+    .int-prev:hover, .int-next:hover { background: var(--saffron); }
+
+    /* ═══════════════════════════════════════════════════
+       ROW 5 — Spiritual Magazine | Content Calendar (Cam 12) | Recommendations
+    ═══════════════════════════════════════════════════ */
+    .row-5col { display: grid; grid-template-columns: 3.0fr 2.3fr; gap: 14px; }
+
+    /* Spiritual Magazine */
+    .spiritual-tile { background: white; border-radius: 8px; border: 2px solid var(--maroon); overflow: hidden; display: flex; flex-direction: column; }
+    .spiritual-articles { flex: 1; padding: 10px 12px; display: flex; flex-direction: column; gap: 9px; }
+    .spi-art { display: flex; gap: 9px; align-items: flex-start; border-bottom: 1px solid #f0e0d0; padding-bottom: 9px; }
+    .spi-art:last-child { border-bottom: none; }
+    .spi-art img { width: 56px; height: 44px; object-fit: cover; border-radius: 4px; flex-shrink: 0; }
+    .spi-art h4 { font-size: 11px; font-weight: 700; color: var(--maroon); margin-bottom: 2px; line-height: 1.35; }
+    .spi-art .s-date { font-size: 9.5px; color: var(--text-muted); margin-bottom: 3px; }
+    .spi-art a { font-size: 10px; color: var(--saffron); font-weight: 700; text-decoration: none; }
+    .spiritual-footer { padding: 10px 12px; border-top: 1px solid #f0e0d0; }
+
+    /* Content Calendar — Cam 12 */
+    .calendar-tile { background: var(--maroon-dark); border-radius: 8px; overflow: hidden; color: white; display: flex; flex-direction: column; }
+    .cal-body { flex: 1; padding: 10px 12px; overflow-x: auto; }
+    .calendar-table { width: 100%; border-collapse: collapse; font-size: 9px; }
+    .calendar-table thead tr { background: var(--saffron); }
+    .calendar-table thead th { padding: 4px 3px; font-weight: 700; color: white; text-align: center; font-size: 8.5px; }
+    .calendar-table tbody tr { border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .week-label { background: rgba(200,146,42,0.18) !important; color: var(--saffron-light); font-weight: 700; font-size: 9px; padding: 4px 6px; text-align: left !important; }
+    .calendar-table td { padding: 4px 3px; text-align: center; color: #d0c0a0; vertical-align: top; line-height: 1.3; font-size: 8.5px; }
+    .cal-day-num { font-size: 8px; color: var(--saffron-light); font-weight: 700; display: block; }
+    .cal-footer { text-align: center; padding: 8px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 9.5px; color: var(--saffron-light); font-style: italic; }
+
+    
+
+    /* ═══════════════════════════════════════════════════
+       TRUST BAR
+    ═══════════════════════════════════════════════════ */
+    .trust-bar { background: var(--maroon-dark); border-radius: 8px; padding: 20px 24px; }
+    .trust-inner { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; align-items: center; }
+    .trust-item { display: flex; align-items: flex-start; gap: 10px; }
+    .trust-icon { font-size: 24px; flex-shrink: 0; }
+    .trust-item h4 { font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; color: var(--saffron-light); margin-bottom: 3px; }
+    .trust-item p { font-size: 10px; color: #c8b090; line-height: 1.4; }
+    .trust-quote { background: var(--maroon); border-radius: 6px; padding: 14px 18px; border-left: 4px solid var(--saffron); }
+    .trust-quote p { font-family: 'Cinzel', serif; font-size: 11px; color: #f0d8a0; font-style: italic; line-height: 1.6; }
+
+    /* ─── FOOTER ─── */
+    footer { background: var(--maroon-dark); color: white; padding: 14px 32px; margin-top: 4px; }
+    .footer-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    .footer-address { display: flex; align-items: center; gap: 7px; font-size: 11px; color: #c8b090; }
+    .footer-contact { display: flex; align-items: center; gap: 14px; font-size: 11px; color: #c8b090; flex-wrap: wrap; }
+    .footer-social { display: flex; gap: 7px; }
+    
+    /* Recommendations */
+    .recom-tile { background: var(--cream); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; }
+    .recom-body { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 9px; }
+    .recom-item { display: flex; gap: 10px; align-items: flex-start; background: white; border-radius: 6px; padding: 9px; border: 1px solid #f0e0d0; cursor: pointer; transition: box-shadow 0.2s; }
+    .recom-item:hover { box-shadow: 0 3px 10px rgba(74,14,14,0.1); }
+    .recom-item .recom-icon { font-size: 24px; flex-shrink: 0; }
+    .recom-info h4 { font-size: 11px; font-weight: 700; color: var(--maroon); margin-bottom: 2px; }
+    .recom-info p { font-size: 10px; color: #555; line-height: 1.4; }
+    .recom-info .recom-tag { display: inline-block; background: var(--cream); border: 1px solid var(--saffron); color: var(--saffron); font-size: 8.5px; font-weight: 700; padding: 2px 6px; border-radius: 2px; margin-top: 4px; }
+    .recom-footer { padding: 10px 12px; border-top: 1px solid var(--border); text-align: center; }
+
+    /* ─── RESPONSIVE ─── */
+    @media(max-width:1100px) {
+      .row-carousel { grid-template-columns: 1fr 0.38fr; height: auto; }
+      .right-col { display: none; }
+      .services-grid { grid-template-columns: repeat(3,1fr); }
+      .row-3col { grid-template-columns: 1fr 1fr; } 
+      .row-4col, .row-5col { grid-template-columns: 1fr 1fr; }
+      .trust-inner { grid-template-columns: 1fr 1fr; }
+    }
+    @media(max-width:700px) {
+      .row-carousel { grid-template-columns: 1fr; height: auto; }
+      .row-carousel .pooja-events-col { display: none; }
+      .header-top { padding: 8px 14px; }
+      .services-grid { grid-template-columns: repeat(2,1fr); }
+      .row-3col, .row-4col, .row-5col { grid-template-columns: 1fr; }
+      .trust-inner { grid-template-columns: 1fr; }
+      nav a { padding: 9px 9px; font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header>
+  <div class="header-top">
+    <div class="logo-area">
+      <img src="Sri Vastu Homes/Sri Padmavathi Aandal Maniyo.jpeg" alt="Sree Ganesh Logo"/>
+      <div class="logo-text">
+          <h1>SRI VASTU HOMES - SRI GANESHA ASTROLOGY</h1>
+          <div class="subtitle">ASTROLOGY & VASTU</div>
+        <div class="tagline">Transform Your Life Through Vedic Wisdom</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="social-icons">
+        <a href="#" class="soc-btn fb" title="Facebook">f</a>
+        <a href="#" class="soc-btn yt" title="YouTube">▶</a>
+        <a href="#" class="soc-btn ig" title="Instagram">📷</a>
+        <a href="#" class="soc-btn tk" title="TikTok">♪</a>
+      </div>
+      <div class="phone-block">
+        <div class="phone-icon">📞</div>
+        <div>
+          <div class="number">0740479980</div>
+          <div class="call-label">Call Us Now</div>
+        </div>
+      </div>
+      <button class="btn-book" onclick="document.querySelector('.booking-tile').scrollIntoView({behavior:'smooth'})">BOOK APPOINTMENT</button>
+    </div>
+  </div>
+  <nav>
+    <a href="#" class="active">HOME</a>
+    <a href="#">ABOUT US</a>
+    <a href="#">ASTROLOGY ▾</a>
+    <a href="#">VASTU ▾</a>
+    <a href="#">POOJA VIDEOS</a>
+    <a href="#">EVENTS</a>
+    <a href="#">BLOG</a>
+    <a href="#">SPIRITUAL & YOGA</a>
+    <a href="#">VEDIC DAYS</a>
+    <a href="#">CONTACT</a>
+  </nav>
+</header>
+
+<!-- ═══════════ PAGE BODY ═══════════ -->
+<div class="page">
+
+  <!-- ───── ROW 1: CAROUSEL SECTION ───── -->
+  <div class="row-carousel">
+
+    <!-- LEFT: Facebook Photo Carousel -->
+    <div class="fb-carousel">
+      <div class="carousel-slides">
+        <div class="slide slide-1 active">
+          <div class="slide-caption">
+            <h3>Sri Vastu Homes - Sri Ganesha Astrology</h3>
+            <p>Guiding Lives Through Vedic Wisdom Since 2009</p>
+          </div>
+        </div>
+        <div class="slide slide-2">
+          <div class="slide-caption">
+            <h3>Sri Ganesh Homam 2025</h3>
+            <p>Remove Obstacles · Bring Prosperity & Blessings</p>
+          </div>
+        </div>
+        <div class="slide slide-3">
+          <div class="slide-caption">
+            <h3>Vedic Astrology Consultations</h3>
+            <p>Personal Chart Readings · Marriage Matching · Career Guidance</p>
+          </div>
+        </div>
+        <div class="slide slide-4">
+          <div class="slide-caption">
+            <h3>Lakshmi Kubera Pooja</h3>
+            <p>Attract Wealth, Prosperity & Abundance into Your Home</p>
+          </div>
+        </div>
+        <!-- Replace slide-5 block (lines 408-417) with this: -->
+<div class="slide slide-5">
+  <video id="carouselVideo" muted playsinline>
+    <source src="Sri Vastu Homes/VID-20260215-WA0064.mp4" type="video/mp4">
+  </video>
+  <div class="slide-caption">
+    <h3>Shiva Raathee Pooja</h3>
+    <p>Divine guidance for your home and life</p>
+  </div>
+</div>
+      </div>
+      <div class="fb-badge">f Facebook Photos</div>
+      <button class="carousel-prev" id="prevBtn">&#8249;</button>
+      <button class="carousel-next" id="nextBtn">&#8250;</button>
+      <div class="carousel-dots" id="carouselDots">
+  <div class="dot active" data-i="0"></div>
+  <div class="dot" data-i="1"></div>
+  <div class="dot" data-i="2"></div>
+  <div class="dot" data-i="3"></div>
+  <div class="dot" data-i="4"></div>
+</div>
+    </div>
+
+    <!-- MIDDLE (1/3 of right half): Pooja Events -->
+    <div class="pooja-events-col">
+      <div class="col-header">🪔 POOJA EVENTS</div>
+      <div class="pooja-event-list">
+        <div class="pe-item">
+          <img src="Sri Vastu Homes/1b84bf3f-e8d0-4b03-8ffc-10c342430204.jpg" alt="Ganesh Homam"/>
+          <h4>SRI GANESH HOMAM</h4>
+          <div class="pe-date">📅 26 May 2025 · 6:30 AM</div>
+          <button class="pe-btn">View →</button>
+        </div>
+        <div class="pe-item">
+          <img src="Sri Vastu Homes/IMG-20260430-WA0014.jpg" alt="Lakshmi Kubera"/>
+          <h4>LAKSHMI KUBERA POOJA</h4>
+          <div class="pe-date">📅 6 Jun 2025 · 6:30 PM</div>
+          <button class="pe-btn">View →</button>
+        </div>
+        <div class="pe-item">
+          <img src="Sri Vastu Homes/IMG-20260321-WA0020.jpg" alt="Navagraha"/>
+          <h4>NAVAGRAHA SHANTI HOMAM</h4>
+          <div class="pe-date">📅 14 Jun 2025 · 6:30 AM</div>
+          <button class="pe-btn">View →</button>
+        </div>
+        <div class="pe-item">
+          <img src="Sri Vastu Homes/IMG-20260321-WA0026.jpg" alt="Saraswati"/>
+          <h4>SARASWATI POOJA</h4>
+          <div class="pe-date">📅 22 Jun 2025 · 7:00 AM</div>
+          <button class="pe-btn">View →</button>
+        </div>
+      </div>
+      <div class="col-footer"><a href="#">View All Events →</a></div>
+    </div>
+
+    <!-- RIGHT: Stacked — Vedic Readings + Booking -->
+    <div class="right-col">
+
+      <!-- Vedic Readings tile (top) -->
+      <div class="vedic-readings-tile">
+        <div class="vr-bg"></div>
+        <div class="vr-content">
+          <div>
+            <h3>VEDIC READINGS</h3>
+            <p>Personal Birth Chart · Marriage · Career · Health · Finance · Name Correction</p>
+            <div class="vr-tags">
+              <span class="vr-tag">🔮 Astrology</span>
+              <span class="vr-tag">🏠 Vastu</span>
+              <span class="vr-tag">💍 Marriage</span>
+              <span class="vr-tag">💼 Career</span>
+              <span class="vr-tag">💎 Gems</span>
+            </div>
+          </div>
+          <button class="vr-btn">BOOK READING →</button>
+        </div>
+      </div>
+
+      <!-- Booking Form tile (bottom) -->
+      <div class="booking-tile">
+        <h3>BOOK YOUR APPOINTMENT</h3>
+        <p class="sub">Get Expert Guidance for a Better Tomorrow</p>
+        <div class="form-row-2">
+          <div class="ff"><span class="fi">👤</span><input type="text" placeholder="Your Name"/></div>
+          <div class="ff"><span class="fi">📋</span>
+            <select>
+              <option value="">Select Service</option>
+              <option>Astrology Reading</option>
+              <option>Vastu Consultation</option>
+              <option>Pooja & Remedies</option>
+              <option>Kundali Matching</option>
+              <option>Gemstone Advice</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="ff"><span class="fi">📞</span><input type="tel" placeholder="Phone Number"/></div>
+          <div class="ff"><span class="fi">📅</span><input type="date"/></div>
+        </div>
+        <div class="ff"><span class="fi">✉️</span><input type="email" placeholder="Email Address"/></div>
+        <button class="btn-book-now" onclick="alert('Thank you! We will contact you to confirm. Jai Ganesh! 🙏')">BOOK NOW</button>
+        <a href="https://wa.me/94711234567" class="wa-mini" target="_blank">💬 Prefer WhatsApp? Chat Now &rsaquo;</a>
+      </div>
+
+    </div>
+  </div><!-- /row-carousel -->
+
+  <!-- ───── SERVICES STRIP ───── 
+  <div class="services-strip">
+    <div class="services-grid">
+      <div class="service-card"><div class="service-icon">🔮</div><h3>ASTROLOGY</h3><p>Personal Readings, Marriage Matching, Business Astrology, Career & Health</p><a href="#">Know More →</a></div>
+      <div class="service-card"><div class="service-icon">🏠</div><h3>VASTU CONSULTATION</h3><p>Home Vastu, Office Vastu, Land Selection, Vastu Plans & Corrections</p><a href="#">Know More →</a></div>
+      <div class="service-card"><div class="service-icon">🙏</div><h3>POOJA & REMEDIES</h3><p>Special Poojas, Homas, Graha Shanti, Lakshmi Pooja, Navagraha Pooja</p><a href="#">Know More →</a></div>
+      <div class="service-card"><div class="service-icon">📖</div><h3>JOTHISHYA MAGAZINE</h3><p>Daily Predictions, Weekly Horoscope, Graha Effects, Vedic Tips & Articles</p><a href="#">Read Now →</a></div>
+      <div class="service-card"><div class="service-icon">📅</div><h3>EVENTS</h3><p>Upcoming Poojas, Workshops, Classes & Special Spiritual Programs</p><a href="#">View Events →</a></div>
+      <div class="service-card"><div class="service-icon">🧘</div><h3>SPIRITUAL & YOGA</h3><p>Meditation, Yoga, Energy Healing, Chakra Balancing & Spiritual Guidance</p><a href="#">Explore →</a></div>
+    </div>
+  </div> -->
+
+  <!-- ───── ROW 3: Jothishya Magazine | Gems | About Me ───── -->
+  <div class="row-3col">
+
+    <!-- Jothishya Magazine -->
+    <div class="mag-tile">
+      <div class="col-header">📖 JOTHISHYA MAGAZINE</div>
+      <div class="mag-articles">
+        <div class="art-item">
+          <img class="art-img" src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=160&q=70" alt="Article 1"/>
+          <div class="art-body">
+            <h4>Jupiter Transit 2025 — What It Means for Your Rashi</h4>
+            <div class="art-date">May 24, 2025</div>
+            <a href="#">Read More →</a>
+          </div>
+        </div>
+        <div class="art-item">
+          <img class="art-img" src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=160&q=70" alt="Article 2"/>
+          <div class="art-body">
+            <h4>Rahu 120 Positions — Understanding the Shadow Planet</h4>
+            <div class="art-date">May 22, 2025</div>
+            <a href="#">Read More →</a>
+          </div>
+        </div>
+        <div class="art-item">
+          <img class="art-img" src="https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=160&q=70" alt="Article 3"/>
+          <div class="art-body">
+            <h4>5 Auspicious Nakshatra Days for New Beginnings</h4>
+            <div class="art-date">May 20, 2025</div>
+            <a href="#">Read More →</a>
+          </div>
+        </div>
+        <div class="art-item">
+          <img class="art-img" src="https://images.unsplash.com/photo-1605649487212-47bdab064df7?w=160&q=70" alt="Article 4"/>
+          <div class="art-body">
+            <h4>Mangal Dosha: Myths vs Reality — A Complete Guide</h4>
+            <div class="art-date">May 18, 2025</div>
+            <a href="#">Read More →</a>
+          </div>
+        </div>
+      </div>
+      <div class="mag-footer"><button class="btn-all">VIEW ALL ARTICLES</button></div>
+    </div>
+
+    <!-- Gems -->
+    <div class="gems-tile">
+      <div class="col-header" style="background:var(--maroon);color:var(--gold);">💎 GEMSTONE GUIDANCE</div>
+      <div class="gems-grid">
+        <div class="gem-card"><span class="gem-emoji">🔴</span><h4>Ruby</h4><p>Sun · Confidence & Leadership</p></div>
+        <div class="gem-card"><span class="gem-emoji">🔵</span><h4>Blue Sapphire</h4><p>Saturn · Discipline & Focus</p></div>
+        <div class="gem-card"><span class="gem-emoji">💚</span><h4>Emerald</h4><p>Mercury · Intellect & Business</p></div>
+        <div class="gem-card"><span class="gem-emoji">🟡</span><h4>Yellow Sapphire</h4><p>Jupiter · Wisdom & Fortune</p></div>
+        <div class="gem-card"><span class="gem-emoji">⚪</span><h4>Pearl</h4><p>Moon · Peace & Emotions</p></div>
+        <div class="gem-card"><span class="gem-emoji">🟤</span><h4>Hessonite</h4><p>Rahu · Protection & Growth</p></div>
+      </div>
+      <div class="gems-footer"><button class="btn-all" style="background:var(--maroon);color:white;border:none;width:100%;padding:9px;font-family:'Cinzel',serif;font-size:10.5px;font-weight:700;cursor:pointer;border-radius:4px;">GET GEM PRESCRIPTION →</button></div>
+    </div>
+
+    <!-- About Me -->
+    <div class="about-tile">
+      <div class="col-header" style="background:var(--maroon);color:var(--gold);">👤 ABOUT ME</div>
+      <div class="about-content">
+        <div class="about-avatar">
+          <img src="Sri Vastu Homes/Prof pic.jpeg" alt="Astrologer" onerror="this.parentElement.innerHTML='🙏'"/>
+        </div>
+        <h3>SREE GANESH ASTROLOGER</h3>
+        <div class="about-title">VEDIC ASTROLOGER & VASTU EXPERT</div>
+        <p class="abt-con2">With 15+ years of deep study in Vedic astrology and Vastu Shastra, I have guided thousands of families towards prosperity, harmony, and spiritual well-being.</p>
+        <div class="about-stats">
+          <div class="abt-stat"><span class="abt-num">15+</span><span class="abt-lbl">Years Experience</span></div>
+          <div class="abt-stat"><span class="abt-num">10K+</span><span class="abt-lbl">Lives Guided</span></div>
+          <div class="abt-stat"><span class="abt-num">500+</span><span class="abt-lbl">Vastu Projects</span></div>
+          <div class="abt-stat"><span class="abt-num">98%</span><span class="abt-lbl">Satisfaction</span></div>
+        </div>
+      </div>
+      <div class="about-footer"><button class="btn-all" style="background:var(--maroon);color:white;border:none;width:100%;padding:9px;font-family:'Cinzel',serif;font-size:10.5px;font-weight:700;cursor:pointer;border-radius:4px;">READ FULL PROFILE →</button></div>
+    </div>
+
+  </div><!-- /row-3col -->
+
+  <!-- ───── ROW 4: Vastu Maga | On Gov Plans/Architecture | Location Map ───── -->
+  <div class="row-4col">
+
+    <!-- Vastu Magazine -->
+    <div class="vastu-tile">
+      <div class="col-header" style="background:var(--maroon);color:var(--gold);">🏠 VASTU MAGAZINE</div>
+      <div class="vastu-articles">
+        <div class="vastu-art">
+          <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=160&q=70" alt="Vastu 1"/>
+          <div>
+            <h4>5 Vastu Doshas That Affect Your Home's Prosperity</h4>
+            <div class="v-date">May 24, 2025</div>
+            <a href="#">Read More →</a>
+          </div>
+        </div>
+        <div class="vastu-art">
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=160&q=70" alt="Vastu 2"/>
+          <div>
+            <h4>Kitchen Direction: The Key to Health and Happiness</h4>
+            <div class="v-date">May 21, 2025</div>
+            <a href="#">Read More →</a>
+          </div>
+        </div>
+        <div class="vastu-art">
+          <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?w=160&q=70" alt="Vastu 3"/>
+          <div>
+            <h4>North-East Zone: The Sacred Ishaan Corner Explained</h4>
+            <div class="v-date">May 18, 2025</div>
+            <a href="#">Read More →</a>
+          </div>
+        </div>
+        <div class="vastu-art">
+          <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=160&q=70" alt="Vastu 4"/>
+          <div>
+            <h4>How to Select the Perfect Land Using Vastu Principles</h4>
+            <div class="v-date">May 15, 2025</div>
+            <a href="#">Read More →</a>
+          </div>
+        </div>
+      </div>
+      <div class="vastu-footer"><button class="btn-all" style="background:var(--maroon);color:white;border:none;width:100%;padding:9px;font-family:'Cinzel',serif;font-size:10.5px;font-weight:700;cursor:pointer;border-radius:4px;">VIEW ALL VASTU ARTICLES</button></div>
+    </div>
+
+    <!-- On Gov Plans / Architecture -->
+    <div class="plans-tile">
+      <div class="col-header">📐 VASTU PLANS & ARCHITECTURE</div>
+      <div class="plans-body">
+        <div class="plan-item">
+          <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=160&q=70" alt="Gov Plan 1"/>
+          <div class="plan-info">
+            <h4>Government Approved House Plans</h4>
+            <p>Vastu-aligned floor plans submitted to local authorities</p>
+            <span class="plan-badge">GOVT APPROVED</span>
+          </div>
+        </div>
+        <div class="plan-item">
+          <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=160&q=70" alt="Plan 2"/>
+          <div class="plan-info">
+            <h4>Custom Residential Architecture</h4>
+            <p>Full Vastu-compliant home design service from plot to finish</p>
+            <span class="plan-badge">RESIDENTIAL</span>
+          </div>
+        </div>
+        <div class="plan-item">
+          <img src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=160&q=70" alt="Plan 3"/>
+          <div class="plan-info">
+            <h4>Commercial & Office Space Design</h4>
+            <p>Optimized layouts for maximum business energy and success</p>
+            <span class="plan-badge">COMMERCIAL</span>
+          </div>
+        </div>
+      </div>
+      <div class="plans-footer"><button class="btn-all" style="background:var(--saffron);color:white;border:none;width:100%;padding:9px;font-family:'Cinzel',serif;font-size:10.5px;font-weight:700;cursor:pointer;border-radius:4px;">ENQUIRE ABOUT PLANS →</button></div>
+    </div>
+
+   
+      <!-- Interior Designs Carousel -->
+    <div class="interior-tile">
+      <div class="col-header" style="background:var(--maroon);color:var(--gold);">🏡 INTERIOR DESIGNS</div>
+      <div class="interior-carousel">
+        <div class="int-slide active" style="background-image:linear-gradient(rgba(74,14,14,0.35),rgba(74,14,14,0.6)),url('Sri Vastu Homes/Plan\ 1.jpg');"></div>
+        <div class="int-slide" style="background-image:linear-gradient(rgba(74,14,14,0.35),rgba(74,14,14,0.6)),url('Sri Vastu Homes/Plan\ 2.jpg');"></div>
+        <div class="int-slide" style="background-image:linear-gradient(rgba(74,14,14,0.35),rgba(74,14,14,0.6)),url('Sri Vastu Homes/Plan\ 3.jpg');"></div>
+        <div class="int-slide" style="background-image:linear-gradient(rgba(74,14,14,0.35),rgba(74,14,14,0.6)),url('Sri Vastu Homes/Plan\ 4.jpg');"></div>
+        <button class="int-prev" onclick="intPrev()">‹</button>
+        <button class="int-next" onclick="intNext()">›</button>
+      </div>
+    </div>
+
+  </div><!-- /row-4col -->
+
+  <!-- ───── ROW 5: Spiritual Magazine | Content Calendar | Recommendations ───── -->
+  <div class="row-5col">
+
+    <!-- Spiritual Magazine -->
+    <div class="spiritual-tile">
+      <div class="col-header" style="background:var(--maroon);color:var(--gold);">🧘 SPIRITUAL MAGAZINE</div>
+      <div class="spiritual-articles">
+        <div class="spi-art">
+          <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=160&q=70" alt="Spiritual 1"/>
+          <div>
+            <h4>The Power of Mantra: How Sacred Sounds Transform Your Life</h4>
+            <div class="s-date">May 24, 2025</div>
+            <a href="#">Read More →</a>
+          </div>
+        </div>
+        <div class="spi-art">
+          <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=160&q=70" alt="Spiritual 2"/>
+          <div>
+            <h4>Meditation for Beginners — A Vedic Approach to Inner Peace</h4>
+            <div class="s-date">May 21, 2025</div>
+            <a href="#">Read More →</a>
+          </div>
+        </div>
+        <div class="spi-art">
+          <img src="https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?w=160&q=70" alt="Spiritual 3"/>
+          <div>
+            <h4>Yoga Nidra: The Sleep of the Gods and Deep Healing</h4>
+            <div class="s-date">May 18, 2025</div>
+            <a href="#">Read More →</a>
+          </div>
+        </div>
+        <div class="spi-art">
+          <img src="https://images.unsplash.com/photo-1593811167562-9cef47bfc4d7?w=160&q=70" alt="Spiritual 4"/>
+          <div>
+            <h4>Chakra Balancing Through Pranayama and Vedic Rituals</h4>
+            <div class="s-date">May 15, 2025</div>
+            <a href="#">Read More →</a>
+          </div>
+        </div>
+      </div>
+      <div class="spiritual-footer"><button class="btn-all" style="background:var(--maroon);color:white;border:none;width:100%;padding:9px;font-family:'Cinzel',serif;font-size:10.5px;font-weight:700;cursor:pointer;border-radius:4px;">VIEW ALL SPIRITUAL ARTICLES</button></div>
+    </div>
+
+    <!-- Content Calendar — "Cam 12" -->
+    <div class="calendar-tile">
+      <div class="col-header">📅 30-DAY CONTENT CALENDAR</div>
+      <div class="cal-body">
+        <table class="calendar-table">
+          <thead>
+            <tr><th>D1</th><th>D2</th><th>D3</th><th>D4</th><th>D5</th><th>D6</th><th>D7</th></tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="7" class="week-label">WEEK 1</td></tr>
+            <tr>
+              <td><span class="cal-day-num">1</span>Auspicious Day</td>
+              <td><span class="cal-day-num">2</span>Vastu Tip</td>
+              <td><span class="cal-day-num">3</span>Lagna Guide</td>
+              <td><span class="cal-day-num">4</span>Pooja Day</td>
+              <td><span class="cal-day-num">5</span>Graha News</td>
+              <td><span class="cal-day-num">6</span>Gem Tip</td>
+              <td><span class="cal-day-num">7</span>Q&A Post</td>
+            </tr>
+            <tr><td colspan="7" class="week-label">WEEK 2</td></tr>
+            <tr>
+              <td><span class="cal-day-num">8</span>Marriage Astro</td>
+              <td><span class="cal-day-num">9</span>Business Tips</td>
+              <td><span class="cal-day-num">10</span>Horoscope</td>
+              <td><span class="cal-day-num">11</span>Client Story</td>
+              <td><span class="cal-day-num">12</span>Vastu Corner</td>
+              <td><span class="cal-day-num">13</span>Rahu/Ketu</td>
+              <td><span class="cal-day-num">14</span>Live Video</td>
+            </tr>
+            <tr><td colspan="7" class="week-label">WEEK 3</td></tr>
+            <tr>
+              <td><span class="cal-day-num">15</span>Free Reading</td>
+              <td><span class="cal-day-num">16</span>Before/After</td>
+              <td><span class="cal-day-num">17</span>Spl Quote</td>
+              <td><span class="cal-day-num">18</span>Pooja Guide</td>
+              <td><span class="cal-day-num">19</span>Lucky Colours</td>
+              <td><span class="cal-day-num">20</span>Meditation</td>
+              <td><span class="cal-day-num">21</span>Testimonial</td>
+            </tr>
+            <tr><td colspan="7" class="week-label">WEEK 4</td></tr>
+            <tr>
+              <td><span class="cal-day-num">22</span>Vedic Day</td>
+              <td><span class="cal-day-num">23</span>Myth Bust</td>
+              <td><span class="cal-day-num">24</span>Energy Clear</td>
+              <td><span class="cal-day-num">25</span>Business Astro</td>
+              <td><span class="cal-day-num">26</span>Offer Post</td>
+              <td><span class="cal-day-num">27</span>FAQ</td>
+              <td><span class="cal-day-num">28</span>Live Q&A</td>
+            </tr>
+            <tr>
+              <td><span class="cal-day-num">29</span>Motivation</td>
+              <td><span class="cal-day-num">30</span>Gratitude</td>
+              <td colspan="5"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="cal-footer">★ Consistency + Value + Devotion = Results</div>
+    </div>
+
+    <!-- Recommendations -->
+   <!-- ───── ROW 6: RECOMMENDATIONS ───── -->
+<div class="recom-tile">
+  <div class="col-header" style="background:var(--maroon);color:var(--gold);">⭐ RECOMMENDATIONS</div>
+  <div class="recom-body" style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:9px;">
+    <div class="recom-item">
+      <div class="recom-icon">📿</div>
+      <div class="recom-info">
+        <h4>Rudraksha Mala — 108 Beads</h4>
+        <p>Enhances meditation, calms the mind, brings divine protection and spiritual energy.</p>
+        <span class="recom-tag">SPIRITUAL</span>
+      </div>
+    </div>
+    <div class="recom-item">
+      <div class="recom-icon">🪔</div>
+      <div class="recom-info">
+        <h4>Daily Pooja Kit — Starter Set</h4>
+        <p>Everything you need for daily home puja — lamps, incense, flowers & manuals included.</p>
+        <span class="recom-tag">POOJA</span>
+      </div>
+    </div>
+    <div class="recom-item">
+      <div class="recom-icon">📖</div>
+      <div class="recom-info">
+        <h4>Vedic Astrology — Beginner Course</h4>
+        <p>Learn to read your own birth chart with this structured 12-week online program.</p>
+        <span class="recom-tag">LEARNING</span>
+      </div>
+    </div>
+    <div class="recom-item">
+      <div class="recom-icon">🏠</div>
+      <div class="recom-info">
+        <h4>Vastu Yantra for Home</h4>
+        <p>Sacred copper yantra to correct energy imbalances without structural changes.</p>
+        <span class="recom-tag">VASTU</span>
+      </div>
+    </div>
+  </div>
+  <div class="recom-footer"><button class="btn-all" style="background:var(--saffron);color:white;border:none;width:100%;padding:9px;font-family:'Cinzel',serif;font-size:10.5px;font-weight:700;cursor:pointer;border-radius:4px;">VIEW ALL RECOMMENDATIONS →</button></div>
+</div>
+
+  <!-- ───── TRUST BAR ───── -->
+  <div class="trust-bar">
+    <div class="trust-inner">
+      <div class="trust-item"><div class="trust-icon">⭐</div><div><h4>EXPERIENCED & TRUSTED</h4><p>15+ years in Vedic Astrology & Vastu Shastra</p></div></div>
+      <div class="trust-item"><div class="trust-icon">✨</div><div><h4>PERSONALIZED SOLUTIONS</h4><p>100% Personalized guidance for your life</p></div></div>
+      <div class="trust-item"><div class="trust-icon">🔒</div><div><h4>CONFIDENTIAL & SECURE</h4><p>Your privacy is our highest priority</p></div></div>
+      <div class="trust-quote"><p>"Let Lord Ganesha remove the obstacles and bring happiness, health, wealth &amp; wisdom in your life."</p></div>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-address"><span>📍</span><span>No. 123, Temple Road, Battaramulla, Sri Lanka</span></div>
+    <div class="footer-contact">
+      <span>📞 071 123 4567 | 077 123 4567</span>
+      <span>✉️ info@sreeganeshvastu.lk</span>
+      <span>🌐 www.sreeganeshvastu.lk</span>
+    </div>
+    <div class="footer-social">
+      <a href="#" class="soc-btn fb">f</a>
+      <a href="#" class="soc-btn yt">▶</a>
+      <a href="#" class="soc-btn ig">📷</a>
+      <a href="#" class="soc-btn tk">♪</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ─── Carousel Logic ───
+// ─── Carousel Logic ───
+let currentSlide = 0;
+const slides = document.querySelectorAll('.slide');
+const dots = document.querySelectorAll('.carousel-dots .dot');
+const carouselVideo = document.getElementById('carouselVideo');
+let autoTimer = null;
+
+function startAutoTimer() {
+  stopAutoTimer();
+  autoTimer = setInterval(() => goToSlide(currentSlide + 1), 4000);
+}
+
+function stopAutoTimer() {
+  if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+}
+
+function goToSlide(n) {
+  if (slides[currentSlide].classList.contains('slide-5') && carouselVideo) {
+    carouselVideo.pause();
+  }
+  slides[currentSlide].classList.remove('active');
+  dots[currentSlide].classList.remove('active');
+  currentSlide = (n + slides.length) % slides.length;
+  slides[currentSlide].classList.add('active');
+  dots[currentSlide].classList.add('active');
+
+  if (slides[currentSlide].classList.contains('slide-5') && carouselVideo) {
+    stopAutoTimer();
+    carouselVideo.currentTime = 0;
+    carouselVideo.play().catch(err => {
+      console.warn('Autoplay blocked:', err);
+      startAutoTimer();
+    });
+  } else {
+    startAutoTimer();
+  }
+}
+
+document.getElementById('nextBtn').addEventListener('click', () => goToSlide(currentSlide + 1));
+document.getElementById('prevBtn').addEventListener('click', () => goToSlide(currentSlide - 1));
+dots.forEach(dot => dot.addEventListener('click', () => goToSlide(+dot.dataset.i)));
+
+startAutoTimer();
+
+document.getElementById('nextBtn').addEventListener('click', () => goToSlide(currentSlide + 1));
+document.getElementById('prevBtn').addEventListener('click', () => goToSlide(currentSlide - 1));
+dots.forEach(dot => dot.addEventListener('click', () => goToSlide(+dot.dataset.i)));
+
+// Start the auto-advance
+startAutoTimer();
+// Auto-advance every 4 seconds
+setInterval(() => goToSlide(currentSlide + 1), 4000);
+
+// ─── Smooth scroll for Book Appointment button ───
+document.querySelector('.btn-book').addEventListener('click', function() {
+  const bt = document.querySelector('.booking-tile');
+  if (bt) bt.scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+
+// ─── Interior Carousel ───
+let intIdx = 0;
+const intSlides = document.querySelectorAll('.int-slide');
+function intNext() { intSlides[intIdx].classList.remove('active'); intIdx = (intIdx + 1) % intSlides.length; intSlides[intIdx].classList.add('active'); }
+function intPrev() { intSlides[intIdx].classList.remove('active'); intIdx = (intIdx - 1 + intSlides.length) % intSlides.length; intSlides[intIdx].classList.add('active'); }
+setInterval(intNext, 4500);
+
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxWIUf0AmSGxFrHB7lwklLxMZef0sKUyNCJ4a98_yYKvae60az82J6_sN8SvIMZLwCJ/exec';
+
+// ── Load recommendations from sheet ──
+async function loadRecommendations() {
+  const res = await fetch(SHEET_URL + '?sheet=recommendations');
+  const data = await res.json();
+  const body = document.querySelector('.recom-body');
+  if (!body || !data.length) return;
+  body.innerHTML = data.map(item => `
+    <div class="recom-item">
+      <div class="recom-icon">${item.icon}</div>
+      <div class="recom-info">
+        <h4>${item.title}</h4>
+        <p>${item.description}</p>
+        <span class="recom-tag">${item.tag}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── Load pooja events from sheet ──
+async function loadPoojaEvents() {
+  const res = await fetch(SHEET_URL + '?sheet=pooja_events');
+  const data = await res.json();
+  // map data into your existing pooja event cards here
+  console.log('Pooja events loaded:', data);
+}
+
+// ── Run on page load ──
+loadRecommendations();
+loadPoojaEvents();
+
+</script>
+</body>
+</html>
